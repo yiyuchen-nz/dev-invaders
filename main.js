@@ -17,7 +17,12 @@ var config = {
 }
 var game = new Phaser.Game(config)
 
-var cloudsWhite, cloudsWhiteSmall, sky
+var cloudsWhite,
+  cloudsWhiteSmall,
+  sky,
+  platforms,
+  movingPlatform,
+  movingPlatform1
 
 function initScene() {}
 
@@ -29,11 +34,10 @@ function preload() {
     'clouds-white-small',
     'assets/minipixel/clouds-white-small.png'
   )
+  this.load.image('ground', 'assets/minipixel/platform.png')
 }
 
 function create() {
-  // this.add.image(800, 200, 'sky')
-
   sky = this.add.tileSprite(
     800, // scene x + y
     200,
@@ -50,10 +54,24 @@ function create() {
     400,
     'clouds-white-small'
   )
+
+  // movingPlatform = this.add.tileSprite(800, 800, 100, 400, 'ground')
+  movingPlatform = this.physics.add.image(400, 650, 'ground')
+
+  // movingPlatform = this.physics.add.image(600, 750, 'ground')
+  movingPlatform.setImmovable(true)
+  movingPlatform.body.allowGravity = false
+  movingPlatform.setVelocityX(-50)
+
+  movingPlatform1 = this.physics.add.image(500, 750, 'ground')
+  movingPlatform1.setImmovable(true)
+  movingPlatform1.body.allowGravity = false
+  movingPlatform1.setVelocityX(-50)
 }
 
 function updateScene() {
   cloudsWhite.tilePositionX += 0.5
   cloudsWhiteSmall.tilePositionX += 0.25
   sky.tilePositionX += 0.25
+  // movingPlatform.tilePositionX += 0.5
 }
