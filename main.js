@@ -39,16 +39,12 @@ class LaserGroup extends Phaser.Physics.Arcade.Group
 }
 
 
-
-
-
 class SpaceScene extends Phaser.Scene{
 	constructor() {
 		super();
     this.cursors
     this.player
-    //this.bullet
-    this.velocity = -50
+    this.setPlayerVelocity = -50
 	}
   
   preload ()
@@ -79,11 +75,11 @@ class SpaceScene extends Phaser.Scene{
   {
     if (this.cursors.up.isDown)
     {
-        this.velocity -= 10
-        this.player.setVelocityY(-200);
+        this.setPlayerVelocity -= 10
+        this.player.setVelocityY(this.setPlayerVelocity);
     }
     else {
-     this.velocity < 0 ? this.velocity += 10 : null
+     this.setPlayerVelocity < 0 ? this.setPlayerVelocity += 10 : null
     }
     if(this.cursors.space.isDown) {
       this.fireBullet()
