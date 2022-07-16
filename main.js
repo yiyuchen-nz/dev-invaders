@@ -22,7 +22,10 @@ var cloudsWhite,
   sky,
   platforms,
   movingPlatform,
-  movingPlatform1
+  movingPlatform1,
+  enemyAlan,
+  enemyBonBon,
+  enemyLips
 
 function initScene() {}
 
@@ -35,6 +38,14 @@ function preload() {
     'assets/minipixel/clouds-white-small.png'
   )
   this.load.image('ground', 'assets/minipixel/platform.png')
+  this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
+    frameWidth: 16,
+    frameHeight: 16,
+  })
+  this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
+    frameWidth: 16,
+    frameHeight: 16,
+  })
 }
 
 function create() {
@@ -67,11 +78,30 @@ function create() {
   movingPlatform1.setImmovable(true)
   movingPlatform1.body.allowGravity = false
   movingPlatform1.setVelocityX(-50)
+
+  enemyAlan = this.add.sprite(900, 100, 'Alan')
+  enemyAlan.setScale(5)
+  this.anims.create({
+    key: 'idle',
+    frames: this.anims.generateFrameNumbers('Alan', { start: 0, end: 5 }),
+    frameRate: 10,
+    repeat: -1,
+  })
+  enemyAlan.anims.play('idle', true)
+
+  enemyBonBon = this.add.sprite(600, 500, 'Bonbon')
+  enemyBonBon.setScale(5)
+  this.anims.create({
+    key: 'idle1',
+    frames: this.anims.generateFrameNumbers('Bonbon', { start: 0, end: 3 }),
+    frameRate: 10,
+    repeat: -1,
+  })
+  enemyBonBon.anims.play('idle1', true)
 }
 
 function updateScene() {
   cloudsWhite.tilePositionX += 0.5
   cloudsWhiteSmall.tilePositionX += 0.25
   sky.tilePositionX += 0.25
-  // movingPlatform.tilePositionX += 0.5
 }
