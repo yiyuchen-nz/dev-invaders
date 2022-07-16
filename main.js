@@ -1,4 +1,7 @@
-import Preloader from './scripts/preloader';
+// import Preloader from './scripts/preloader';
+// import test from './scripts/preloader'
+
+// test()
 
 var config = {
   type: Phaser.AUTO,
@@ -37,26 +40,18 @@ function create ()
   player.setCollideWorldBounds(true);
 
   cursors = this.input.keyboard.createCursorKeys();
-
 }
+
+let velocity = -50
 
 function update ()
 {
-  if (cursors.left.isDown)
-  {
-      player.setVelocityX(-160);
-  }
-  else if (cursors.right.isDown)
-  {
-      player.setVelocityX(160);
-  }
-  else
-  {
-      player.setVelocityX(0);
-  }
-
   if (cursors.up.isDown)
   {
-      player.setVelocityY(-330);
+      velocity -= 10
+      player.setVelocityY(velocity);
+  }
+  else {
+    velocity < 0 ? velocity += 10 : null
   }
 }
