@@ -1,7 +1,7 @@
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 800,
   physics: {
     default: 'arcade',
     arcade: {
@@ -9,36 +9,51 @@ var config = {
     },
   },
   scene: {
+    init: initScene,
     preload: preload,
     create: create,
+    update: updateScene,
   },
 }
 var game = new Phaser.Game(config)
 
-function preload() {
-  this.load.setBaseURL('https://labs.phaser.io')
+var cloudsWhite, cloudsWhiteSmall, sky
 
-  this.load.image('sky', 'assets/skies/space3.png')
-  this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-  this.load.image('red', 'assets/particles/red.png')
+function initScene() {}
+
+function preload() {
+  this.load.image('sky', 'assets/minipixel/SpaceBG.png')
+
+  this.load.image('clouds-white', 'assets/minipixel/clouds-white.png')
+  this.load.image(
+    'clouds-white-small',
+    'assets/minipixel/clouds-white-small.png'
+  )
 }
 
 function create() {
-  this.add.image(400, 300, 'sky')
+  // this.add.image(800, 200, 'sky')
 
-  var particles = this.add.particles('red')
+  sky = this.add.tileSprite(
+    800, // scene x + y
+    200,
+    2400, //
+    1400,
+    'sky'
+  )
 
-  var emitter = particles.createEmitter({
-    speed: 100,
-    scale: { start: 1, end: 0 },
-    blendMode: 'ADD',
-  })
+  cloudsWhite = this.add.tileSprite(800, 200, 2400, 400, 'clouds-white')
+  cloudsWhiteSmall = this.add.tileSprite(
+    640, // scene x + y
+    200,
+    2400, //
+    400,
+    'clouds-white-small'
+  )
+}
 
-  var logo = this.physics.add.image(400, 100, 'logo')
-
-  logo.setVelocity(100, 200)
-  logo.setBounce(1, 1)
-  logo.setCollideWorldBounds(true)
-
-  emitter.startFollow(logo)
+function updateScene() {
+  cloudsWhite.tilePositionX += 0.5
+  cloudsWhiteSmall.tilePositionX += 0.25
+  sky.tilePositionX += 0.25
 }
