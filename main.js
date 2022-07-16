@@ -1,6 +1,6 @@
 var config = {
   type: Phaser.AUTO,
-  width: 1980,
+  width: 1920,
   height: 800,
   physics: {
     default: 'arcade',
@@ -9,18 +9,51 @@ var config = {
     },
   },
   scene: {
+    init: initScene,
     preload: preload,
     create: create,
+    update: updateScene,
   },
 }
 var game = new Phaser.Game(config)
 
-function preload() {
-  this.load.setBaseURL('https://labs.phaser.io')
+var cloudsWhite, cloudsWhiteSmall, sky
 
-  this.load.image('sky', 'assets/skies/space3.png')
-  this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-  this.load.image('red', 'assets/particles/red.png')
+function initScene() {}
+
+function preload() {
+  this.load.image('sky', 'assets/minipixel/SpaceBG.png')
+
+  this.load.image('clouds-white', 'assets/minipixel/clouds-white.png')
+  this.load.image(
+    'clouds-white-small',
+    'assets/minipixel/clouds-white-small.png'
+  )
 }
 
-function create() {}
+function create() {
+  // this.add.image(800, 200, 'sky')
+
+  sky = this.add.tileSprite(
+    800, // scene x + y
+    200,
+    2400, //
+    1400,
+    'sky'
+  )
+
+  cloudsWhite = this.add.tileSprite(800, 200, 2400, 400, 'clouds-white')
+  cloudsWhiteSmall = this.add.tileSprite(
+    640, // scene x + y
+    200,
+    2400, //
+    400,
+    'clouds-white-small'
+  )
+}
+
+function updateScene() {
+  cloudsWhite.tilePositionX += 0.5
+  cloudsWhiteSmall.tilePositionX += 0.25
+  sky.tilePositionX += 0.25
+}
