@@ -1,4 +1,3 @@
-
 class Laser extends Phaser.Physics.Arcade.Sprite
 {
 	constructor(scene, x, y) {
@@ -9,9 +8,9 @@ class Laser extends Phaser.Physics.Arcade.Sprite
 		this.body.reset(x, y);
 
 		this.setActive(true);
-		this.setVisible(false);
+		this.setVisible(true);
 
-		this.setVelocityY(-900);
+		this.setVelocityX(900);
 	}
 
 }
@@ -22,62 +21,25 @@ class LaserGroup extends Phaser.Physics.Arcade.Group
 		super(scene.physics.world, scene);
 
 		this.createMultiple({
-			frameQuantity: 30,
+			frameQuantity: 1000,
 			key: 'laser',
 			active: false,
 			visible: false,
+      setScale: { x: 0.03, y: 0.03 },
 			classType: Laser
 		});
 	}
 
 	fireBullet(x, y) {
 		const laser = this.getFirstDead(false);
-
 		if(laser) {
 			laser.fire(x, y);
 		}
 	}
 }
 
-class Laser extends Phaser.Physics.Arcade.Sprite
-{
-	constructor(scene, x, y) {
-		super(scene, x, y, 'laser');
-	}
 
-	fire(x, y) {
-		this.body.reset(x, y);
 
-		this.setActive(true);
-		this.setVisible(false);
-
-		this.setVelocityY(-900);
-	}
-
-}
-
-class LaserGroup extends Phaser.Physics.Arcade.Group
-{
-	constructor(scene) {
-		super(scene.physics.world, scene);
-
-		this.createMultiple({
-			frameQuantity: 30,
-			key: 'laser',
-			active: false,
-			visible: false,
-			classType: Laser
-		});
-	}
-
-	fireBullet(x, y) {
-		const laser = this.getFirstDead(false);
-
-		if(laser) {
-			laser.fire(x, y);
-		}
-	}
-}
 
 
 class SpaceScene extends Phaser.Scene{
@@ -85,7 +47,7 @@ class SpaceScene extends Phaser.Scene{
 		super();
     this.cursors
     this.player
-    this.bullet
+    //this.bullet
     this.velocity = -50
 	}
   
@@ -93,7 +55,7 @@ class SpaceScene extends Phaser.Scene{
   {
     this.load.image('sky', 'assets/sky.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-    this.load.image('fireBall', 'assets/blast.png');
+    this.load.image('laser', 'assets/blast.png');
     
   }
 
@@ -104,12 +66,14 @@ class SpaceScene extends Phaser.Scene{
     this.player = this.physics.add.sprite(20, 0, 'dude');
     this.player.setCollideWorldBounds(true);
 
-    this.bullet = this.physics.add.sprite(0,0,'shoot')
-    this.bullet.setScale(0.05)
-    this.bullet.setCollideWorldBounds(true);
+    this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }
+
+  fireBullet() {
+		this.laserGroup.fireBullet(this.player.x + 20, this.player.y);
+	}
 
   update ()
   {
@@ -120,6 +84,9 @@ class SpaceScene extends Phaser.Scene{
     }
     else {
      this.velocity < 0 ? this.velocity += 10 : null
+    }
+    if(this.cursors.space.isDown) {
+      this.fireBullet()
     }
   }
 
