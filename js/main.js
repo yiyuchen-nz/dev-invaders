@@ -6,13 +6,14 @@ const config = {
   height: 800,
   backgroundColor: '#333333',
   parent: 'dev-invaders',
-  // physics: {
-  //   default: 'arcade',
-  //   arcade: {
-  //     gravity: { y: 200 },
-  //   },
-  // },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 330 },
+      debug: false,
+    },
+  },
   scene: [MainScene],
 }
 
-new Phaser.Game(config)
+const game = new Phaser.Game(config)
