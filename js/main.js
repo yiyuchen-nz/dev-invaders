@@ -1,4 +1,5 @@
 import MainScene from './MainScene.js'
+import ParallaxScene from './ParallaxScene.js'
 
 const config = {
   type: Phaser.AUTO,
@@ -13,7 +14,9 @@ const config = {
       debug: false,
     },
   },
+  // pixelArt: true,
   scene: [MainScene],
+  // scene: [ParallaxScene],
 }
 
 const game = new Phaser.Game(config)
