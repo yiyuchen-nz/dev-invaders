@@ -5,7 +5,6 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    // super()
 
     this.cursors
     this.player
@@ -19,7 +18,6 @@ export default class MainScene extends Phaser.Scene {
       'assets/minipixel/clouds-white-small.png'
     )
 
-    // this.load.image('sky', 'assets/sky.png')
     this.load.spritesheet('dude', 'assets/dude.png', {
       frameWidth: 32,
       frameHeight: 48,
@@ -27,26 +25,17 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('laser', 'assets/blast.png')
   }
 
-  // , cloudsWhite,cloudsWhiteSmall
   create() {
-    // this.earth = new Earth({
-    //   scene: this,
-    //   image: 'background',
-    //   // x: this.game.config.width,
-    //   // y: this.game.config.height,
-    //   // depth: 1,
-    // })
-    this.add.tileSprite(800, 200, 2400, 1400, 'background')
-    // cloudsWhite = this.add.tileSprite(800, 200, 2400, 400, 'clouds-white')
-    // cloudsWhiteSmall = this.add.tileSprite(
-    //   640, // scene x + y
-    //   200,
-    //   2400, //
-    //   400,
-    //   'clouds-white-small'
-    // )
-
-    // this.add.image(400, 300, 'sky')
+    // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
+    this.background = this.add.tileSprite(800, 200, 2400, 1400, 'background')
+    this.cloudsWhite = this.add.tileSprite(800, 200, 2400, 400, 'clouds-white')
+    this.cloudsWhiteSmall = this.add.tileSprite(
+      640, // x
+      200, // y
+      2400, // width
+      400, // height
+      'clouds-white-small' // textureKey
+    )
 
     this.player = this.physics.add.sprite(20, 0, 'dude')
     this.player.setCollideWorldBounds(true)
@@ -59,9 +48,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    // cloudsWhite.tilePositionX += 0.5
-    // cloudsWhiteSmall.tilePositionX += 0.25
-    // background.tilePositionX += 0.25
+    this.cloudsWhite.tilePositionX += 0.5
+    this.cloudsWhiteSmall.tilePositionX += 0.25
+    this.background.tilePositionX += 1
 
     if (this.cursors.up.isDown) {
       this.setPlayerVelocity -= 10
