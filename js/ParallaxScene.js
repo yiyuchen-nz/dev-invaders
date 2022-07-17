@@ -17,6 +17,8 @@ export default class ParallaxScene extends Phaser.Scene {
     const width = this.scale.width
     const height = this.scale.height
 
+    // var movingPlatform, movingPlatform1
+
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
       .tileSprite(0, 0, width, height, 'clouds1')
@@ -36,6 +38,10 @@ export default class ParallaxScene extends Phaser.Scene {
     this.clouds4 = this.add
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
+
+    // movingPlatform.setImmovable(true)
+    // movingPlatform.body.allowGravity = false
+    // movingPlatform.setVelocityX(-50)
 
     // this.scene.start('MainScene')
   }

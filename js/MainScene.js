@@ -9,6 +9,7 @@ export default class MainScene extends Phaser.Scene {
     this.cursors
     this.player
     this.setPlayerVelocity = -50
+    this.Platform
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -18,6 +19,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('clouds4', 'assets/parallax/clouds_4.png')
     this.load.image('rocks1', 'assets/parallax/rocks_1.png')
     this.load.image('rocks2', 'assets/parallax/rocks_2.png')
+
+    this.load.image('platform', 'assets/minipixel/platform.png')
 
     this.load.spritesheet('dude', 'assets/dude.png', {
       frameWidth: 32,
@@ -31,6 +34,10 @@ export default class MainScene extends Phaser.Scene {
 
     const width = this.scale.width
     const height = this.scale.height
+
+    this.Platform = this.physics.add.staticGroup()
+
+    // player = this.physics.add.staticGroup()
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
@@ -52,13 +59,21 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
+    this.Platform = this.add
+      .tileSprite(0, 40, width, height, 'platform')
+      .setOrigin(0, -0.9)
+
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(5)
+
     this.player.setCollideWorldBounds(true)
+
     this.laserGroup = new LaserGroup(this)
     this.cursors = this.input.keyboard.createCursorKeys()
 
     // this.parallax = new ParallaxScene(this)
+
+    this.physics.add.collider(this.player, this.Platform)
   }
 
   fireBullet() {
@@ -72,6 +87,8 @@ export default class MainScene extends Phaser.Scene {
     this.rocks2.tilePositionX += 1
     this.clouds3.tilePositionX += 3
     this.clouds4.tilePositionX += 4
+
+    this.Platform.tilePositionX += 4
 
     // this.parallax.start()
 
