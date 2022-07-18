@@ -23,7 +23,7 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group {
       key: 'laser',
       active: false,
       visible: false,
-      setScale: { x: 0.03, y: 0.03 },
+      setScale: { x: 3, y: 3 },
       classType: Laser,
     })
   }
