@@ -12,6 +12,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemyBonBon
     this.enemyLips
     this.platforms
+    // this.shootingSound
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -22,11 +23,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('rocks1', 'assets/parallax/rocks_1.png')
     this.load.image('rocks2', 'assets/parallax/rocks_2.png')
 
-    this.load.spritesheet('dude', 'assets/dude.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
-    this.load.image('laser', 'assets/blast.png')
+    this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
+    this.load.image('laser', 'assets/minipixel/flaming_meteor.png')
 
     this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -42,6 +40,8 @@ export default class MainScene extends Phaser.Scene {
     })
 
     this.load.image('platform', 'assets/minipixel/spikes.png')
+
+    //this.load.audioSprite('pewPew', 'assets/minipixel/player-fire.wav')
   }
 
   create() {
@@ -86,12 +86,20 @@ export default class MainScene extends Phaser.Scene {
     //   const body = platform.body
     //   body.updateFromGameObject()
     // }
+    this.platforms = this.physics.add.group()
+    for (var i = 0; i < 20; i++) {
+      this.platform = this.physics.add
+        .sprite(
+          Phaser.Math.Between(0, this.game.config.width),
+          600, //Phaser.Math.Between(0, this.game.config.height)
+          'platform'
+        )
+        .setSize(50, 50, true) //164x160
+        .setGravity(0, -330)
+        .setVelocityX(-50)
+    }
 
-    this.platform = this.physics.add
-      .sprite(1920, 750, 'platform')
-      .setSize(50, 50, true) //164x160
-      .setGravity(0, -330)
-      .setVelocityX(-200)
+    this.groupPlatforms = this.platforms.getChildren()
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
@@ -165,23 +173,31 @@ export default class MainScene extends Phaser.Scene {
         this.enemyBonBon,
         this.enemyLips,
         this.platform,
-        // this.platformsChildren,
+        this.groupPlatforms.splice(','),
       ],
       this.hitEnemy,
       null,
       this
     )
+
+    //this.shootingSound = this.add.audioSprite('pewPew')
   }
 
   fireBullet() {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
+    //this.shootingSound.playAudioSprite('pewPew', space)
   }
 
   hitEnemy(player, enemy) {
     this.physics.pause()
     player.setTint(0xff0000)
     enemy.destroy()
-    this.gameOver()
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.gameOver()
+      },
+    })
   }
 
   gameOver() {
