@@ -62,6 +62,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
+    console.log(this.player)
     // this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
@@ -118,15 +119,10 @@ export default class MainScene extends Phaser.Scene {
       this.fireBullet()
     }
 
-    // if (this.cameras.main.worldView.contains(this.player.x,this.player.y)) {
-    //   console.log('inside')
-    // }else{
-    //   console.log('outisde')
-    // }
-
     // if the player leaves the screen game over
     if (!this.cameras.main.worldView.contains(this.player.x,this.player.y)) {
-      this.scene.launch('GameOver');
+      // this.scene.launch overlays scenes
+      this.scene.start('GameOver');
     }
   }
 }
