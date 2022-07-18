@@ -1,6 +1,23 @@
 import MainScene from './MainScene.js'
 import ParallaxScene from './ParallaxScene.js'
 
+var GameOver = {
+  key: 'GameOver',
+
+  create: function create() {
+      var text = this.add.text(
+        640, 
+        360, 
+        "Game Over", 
+        {
+            fontSize: 50,
+            color: "#000000",
+            fontStyle: "bold"
+        }
+    ).setOrigin(0.5);
+  }
+};
+
 const config = {
   type: Phaser.AUTO,
   width: 1920,
@@ -15,7 +32,7 @@ const config = {
     },
   },
   // pixelArt: true,
-  scene: [MainScene],
+  scene: [MainScene, GameOver],
   // scene: [ParallaxScene],
 }
 

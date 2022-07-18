@@ -34,6 +34,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
     const width = this.scale.width
@@ -125,7 +126,7 @@ export default class MainScene extends Phaser.Scene {
 
     // if the player leaves the screen game over
     if (!this.cameras.main.worldView.contains(this.player.x,this.player.y)) {
-      console.log('game over')
+      this.scene.launch('GameOver');
     }
   }
 }
