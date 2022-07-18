@@ -12,6 +12,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemyAlan
     this.enemyBonBon
     this.enemyLips
+    this.platforms
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -37,6 +38,8 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
+
+    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
   }
 
   create() {
@@ -64,6 +67,28 @@ export default class MainScene extends Phaser.Scene {
     this.clouds4 = this.add
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
+
+    // this.platforms = this.physics.add.group()
+    // for (let i = 0; i < 1; ++i) {
+    //   const x = Phaser.Math.Between(400, 2000)
+    //   const y = 40 * i
+
+    //   const platform = this.platforms
+    //     .create(x, y, 'platform')
+    //     .setGravity(0, -330)
+    //     .setVelocityX(-200)
+    //   console.log(platform)
+    //   // this.platforms.angle(90)
+    //   platform.scale = 3
+
+    //   const body = platform.body
+    //   body.updateFromGameObject()
+    // }
+
+    this.platform = this.physics.add
+      .sprite(500, 100, 'platform')
+      .setGravity(0, -330)
+      .setVelocityX(-200)
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
@@ -115,7 +140,12 @@ export default class MainScene extends Phaser.Scene {
     this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      targets: [
+        this.enemyAlan,
+        this.enemyBonBon,
+        this.enemyLips,
+        // this.platforms,
+      ],
       x: 0,
       duration: 8800,
       ease: 'Linear',
@@ -124,9 +154,17 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax = new ParallaxScene(this)
 
+    // let platformsChildren = this.platforms.getChildren()
+    // console.log('this.platforms', this.platforms)
     this.physics.add.collider(
       this.player,
-      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      [
+        this.enemyAlan,
+        this.enemyBonBon,
+        this.enemyLips,
+        this.platform,
+        // this.platformsChildren,
+      ],
       this.hitEnemy,
       null,
       this
