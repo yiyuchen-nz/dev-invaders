@@ -12,6 +12,8 @@ export default class MainScene extends Phaser.Scene {
     this.enemyBonBon
     this.enemyLips
     this.platforms
+    this.laserGroup
+    this.kaboom
     // this.shootingSound
   }
   preload() {
@@ -25,6 +27,11 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
     this.load.image('laser', 'assets/minipixel/flaming_meteor.png')
+
+    this.load.spritesheet('kaboom', 'assets/minipixel/Effects/Explosion.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    })
 
     this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -98,7 +105,6 @@ export default class MainScene extends Phaser.Scene {
         .setGravity(0, -330)
         .setVelocityX(-50)
     }
-
     this.groupPlatforms = this.platforms.getChildren()
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
@@ -162,6 +168,12 @@ export default class MainScene extends Phaser.Scene {
       yoyo: true,
     })
 
+    this.anims.create({
+      key: 'explosion',
+      frames: this.anims.generateFrameNumbers('kaboom', { start: 0, end: 5 }),
+      frameRate: 5,
+    })
+
     // this.parallax = new ParallaxScene(this)
 
     // let platformsChildren = this.platforms.getChildren()
@@ -173,13 +185,20 @@ export default class MainScene extends Phaser.Scene {
         this.enemyBonBon,
         this.enemyLips,
         this.platform,
-        this.groupPlatforms.splice(','),
+        //this.groupPlatforms.splice(','),
       ],
       this.hitEnemy,
       null,
       this
     )
 
+    this.physics.add.collider(
+      this.laserGroup,
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips, this.platform],
+      this.fireEnemy,
+      null,
+      this
+    )
     //this.shootingSound = this.add.audioSprite('pewPew')
   }
 
@@ -192,12 +211,22 @@ export default class MainScene extends Phaser.Scene {
     this.physics.pause()
     player.setTint(0xff0000)
     enemy.destroy()
+    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    player.destroy()
+    console.log('enemy', enemy)
     this.time.addEvent({
       delay: 1000,
       callback: () => {
         this.gameOver()
       },
     })
+  }
+
+  fireEnemy(enemy, laser) {
+    enemy.setTint(0xff0000)
+    enemy.destroy()
+    this.add.sprite(enemy.x, enemy.y, 'kaboom').setScale(5).play('explosion')
+    laser.destroy()
   }
 
   gameOver() {
@@ -219,6 +248,7 @@ export default class MainScene extends Phaser.Scene {
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
+      console.log(this.laserGroup)
     }
 
     // if the player leaves the screen game over
