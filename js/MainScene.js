@@ -1,15 +1,17 @@
 import LaserGroup from '../js/Laser.js'
-import Enemy from '../js/Enemies.js'
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-
     this.cursors
     this.player
     this.setPlayerVelocity = -50
+    this.enemyAlan
+    this.enemyBonBon
+    this.enemyLips
+    this.platforms
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -38,6 +40,8 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
+
+    this.load.image('platform', 'assets/minipixel/spikes.png')
   }
 
   create() {
@@ -66,15 +70,36 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
+    // this.platforms = this.physics.add.group()
+    // for (let i = 0; i < 1; ++i) {
+    //   const x = Phaser.Math.Between(400, 2000)
+    //   const y = 40 * i
+
+    //   const platform = this.platforms
+    //     .create(x, y, 'platform')
+    //     .setGravity(0, -330)
+    //     .setVelocityX(-200)
+    //   console.log(platform)
+    //   // this.platforms.angle(90)
+    //   platform.scale = 3
+
+    //   const body = platform.body
+    //   body.updateFromGameObject()
+    // }
+
+    this.platform = this.physics.add
+      .sprite(1920, 750, 'platform')
+      .setSize(50, 50, true) //164x160
+      .setGravity(0, -330)
+      .setVelocityX(-200)
+
     this.player = this.physics.add.sprite(50, 0, 'dude')
-    this.player.setScale(5)
-    this.player.setCollideWorldBounds(true)
+    this.player.setScale(0.3)
+    // this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
-
-    // console.log('enemyAlan', enemyAlan)
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
@@ -82,9 +107,11 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyAlan = this.add.sprite(2000, 100, 'Alan').setScale(5)
-
-    enemyAlan.play('idle', true)
+    this.enemyAlan = this.physics.add
+      .sprite(3000, 300, 'Alan')
+      .setScale(5)
+      .setGravity(0, -330)
+    this.enemyAlan.play('idle', true)
 
     this.anims.create({
       key: 'idle1',
@@ -93,9 +120,12 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyBonBon = this.add.sprite(3000, 500, 'Bonbon').setScale(5)
+    this.enemyBonBon = this.physics.add
+      .sprite(3000, 500, 'Bonbon')
+      .setScale(5)
+      .setGravity(0, -330)
 
-    enemyBonBon.play('idle1', true)
+    this.enemyBonBon.play('idle1', true)
 
     this.anims.create({
       key: 'idle2',
@@ -104,22 +134,58 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyLips = this.add.sprite(5000, 600, 'Lips').setScale(5)
+    this.enemyLips = this.physics.add
+      .sprite(5000, 600, 'Lips')
+      .setScale(5)
+      .setGravity(0, -330)
 
-    enemyLips.play('idle2', true)
+    this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [enemyAlan, enemyBonBon, enemyLips],
+      targets: [
+        this.enemyAlan,
+        this.enemyBonBon,
+        this.enemyLips,
+        // this.platforms,
+      ],
       x: 0,
       duration: 8800,
       ease: 'Linear',
       yoyo: true,
     })
+
     // this.parallax = new ParallaxScene(this)
+
+    // let platformsChildren = this.platforms.getChildren()
+    // console.log('this.platforms', this.platforms)
+    this.physics.add.collider(
+      this.player,
+      [
+        this.enemyAlan,
+        this.enemyBonBon,
+        this.enemyLips,
+        this.platform,
+        // this.platformsChildren,
+      ],
+      this.hitEnemy,
+      null,
+      this
+    )
   }
 
   fireBullet() {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
+  }
+
+  hitEnemy(player, enemy) {
+    this.physics.pause()
+    player.setTint(0xff0000)
+    enemy.destroy()
+    this.gameOver()
+  }
+
+  gameOver() {
+    this.scene.start('GameOver')
   }
 
   update() {
@@ -133,13 +199,16 @@ export default class MainScene extends Phaser.Scene {
     // this.parallax.start()
 
     if (this.cursors.up.isDown) {
-      this.setPlayerVelocity -= 10
-      this.player.setVelocityY(this.setPlayerVelocity)
-    } else {
-      this.setPlayerVelocity < 0 ? (this.setPlayerVelocity += 10) : null
+      this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
+    }
+
+    // if the player leaves the screen game over
+    if (!this.cameras.main.worldView.contains(this.player.x, this.player.y)) {
+      // this.scene.launch overlays scenes
+      this.gameOver()
     }
   }
 }

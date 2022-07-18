@@ -4,13 +4,20 @@ export class Laser extends Phaser.Physics.Arcade.Sprite {
   }
 
   fire(x, y) {
-    this.body.reset(x, y)
+      this.body.reset(x, y)
+      this.setVelocityX(900)
+      // refactor this with only gravity for player
+      this.setGravity(0, -330)
+      this.setActive(true)
+      this.setVisible(true)
 
-    this.setActive(true)
-    this.setVisible(true)
-
-    this.setVelocityX(900)
-    this.setGravity(0, -330)
+      // Destroy bullet once off screen
+      this.scene.time.addEvent({
+        delay: 10000,
+        callback: () => {
+          this.destroy()
+        }
+      })
   }
 }
 
@@ -26,12 +33,18 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group {
       setScale: { x: 3, y: 3 },
       classType: Laser,
     })
+
+    this.shotDelay = 300
+    this.nextShotTime = 0
   }
 
   fireBullet(x, y) {
     const laser = this.getFirstDead(false)
-    if (laser) {
-      laser.fire(x, y)
+    if (this.nextShotTime < this.scene.time.now) {
+      if (laser) {
+        laser.fire(x, y)
+      }
+      this.nextShotTime = this.scene.time.now + this.shotDelay
     }
   }
 }
