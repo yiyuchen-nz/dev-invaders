@@ -20,11 +20,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('rocks1', 'assets/parallax/rocks_1.png')
     this.load.image('rocks2', 'assets/parallax/rocks_2.png')
 
-    this.load.spritesheet('dude', 'assets/dude.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    })
-    this.load.image('laser', 'assets/blast.png')
+    this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
+    this.load.image('laser', 'assets/minipixel/flaming_meteor.png')
 
     this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -63,7 +60,7 @@ export default class MainScene extends Phaser.Scene {
       .setOrigin(0, 0)
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
-    this.player.setScale(5)
+    this.player.setScale(0.3)
     this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
