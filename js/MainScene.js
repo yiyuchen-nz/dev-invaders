@@ -10,6 +10,9 @@ export default class MainScene extends Phaser.Scene {
     this.cursors
     this.player
     this.setPlayerVelocity = -50
+    this.enemyAlan
+    this.enemyBonBon
+    this.enemyLips
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -66,12 +69,12 @@ export default class MainScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
     this.player.setCollideWorldBounds(true)
+    // this.player.setInteractive()
 
     this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
-    // console.log('enemyAlan', enemyAlan)
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
@@ -79,9 +82,11 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyAlan = this.add.sprite(2000, 100, 'Alan').setScale(5)
-
-    enemyAlan.play('idle', true)
+    this.enemyAlan = this.physics.add
+      .sprite(3000, 300, 'Alan')
+      .setScale(5)
+      .setGravity(0, -330)
+    this.enemyAlan.play('idle', true)
 
     this.anims.create({
       key: 'idle1',
@@ -90,9 +95,12 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyBonBon = this.add.sprite(3000, 500, 'Bonbon').setScale(5)
+    this.enemyBonBon = this.physics.add
+      .sprite(3000, 500, 'Bonbon')
+      .setScale(5)
+      .setGravity(0, -330)
 
-    enemyBonBon.play('idle1', true)
+    this.enemyBonBon.play('idle1', true)
 
     this.anims.create({
       key: 'idle2',
@@ -101,22 +109,42 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    const enemyLips = this.add.sprite(5000, 600, 'Lips').setScale(5)
+    this.enemyLips = this.physics.add
+      .sprite(5000, 600, 'Lips')
+      .setScale(5)
+      .setGravity(0, -330)
 
-    enemyLips.play('idle2', true)
+    this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [enemyAlan, enemyBonBon, enemyLips],
+      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       x: 0,
       duration: 8800,
       ease: 'Linear',
       yoyo: true,
     })
+
     // this.parallax = new ParallaxScene(this)
+
+    this.physics.add.collider(
+      this.player,
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      this.hitEnemy,
+      null,
+      this
+    )
   }
 
   fireBullet() {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
+  }
+
+  hitEnemy(player, enemy) {
+    this.physics.pause()
+    player.setTint(0xff0000)
+    enemy.destroy()
+    // gameOver = true
+    console.log('player', player)
   }
 
   update() {
