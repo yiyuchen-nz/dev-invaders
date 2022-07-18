@@ -39,7 +39,7 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
+    this.load.image('platform', 'assets/minipixel/spikes.png')
   }
 
   create() {
@@ -86,7 +86,8 @@ export default class MainScene extends Phaser.Scene {
     // }
 
     this.platform = this.physics.add
-      .sprite(500, 100, 'platform')
+      .sprite(1920, 750, 'platform')
+      .setSize(50, 50, true) //164x160
       .setGravity(0, -330)
       .setVelocityX(-200)
 
