@@ -1,4 +1,5 @@
 import LaserGroup from '../js/Laser.js'
+import Enemy from '../js/Enemies.js'
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
@@ -24,6 +25,15 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 48,
     })
     this.load.image('laser', 'assets/blast.png')
+
+    this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
   }
 
   create() {
@@ -55,8 +65,33 @@ export default class MainScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(5)
     this.player.setCollideWorldBounds(true)
+
     this.laserGroup = new LaserGroup(this)
+
     this.cursors = this.input.keyboard.createCursorKeys()
+
+    // this.enemyAlan = new Enemy(this)
+
+    // console.log('enemyAlan', enemyAlan)
+    this.enemyAlan = this.add.sprite(900, 100, 'Alan')
+    this.enemyAlan.setScale(5)
+    this.anims.create({
+      key: 'idle',
+      frames: this.anims.generateFrameNumbers('Alan', { start: 0, end: 5 }),
+      frameRate: 10,
+      repeat: -1,
+    })
+    this.enemyAlan.anims.play('idle', true)
+
+    this.enemyBonBon = this.add.sprite(600, 500, 'Bonbon')
+    this.enemyBonBon.setScale(5)
+    this.anims.create({
+      key: 'idle1',
+      frames: this.anims.generateFrameNumbers('Bonbon', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
+    })
+    this.enemyBonBon.anims.play('idle1', true)
 
     // this.parallax = new ParallaxScene(this)
   }
