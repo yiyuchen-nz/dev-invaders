@@ -1,5 +1,5 @@
 import LaserGroup from '../js/Laser.js'
-import Enemy from '../js/Enemies.js'
+// import Enemy from '../js/Enemies.js'
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
