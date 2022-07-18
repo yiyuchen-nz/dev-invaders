@@ -6,10 +6,8 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-
     this.cursors
     this.player
-    this.setPlayerVelocity = -50
   }
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
@@ -66,14 +64,12 @@ export default class MainScene extends Phaser.Scene {
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
-    console.log(this.player)
     // this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
-
-    // console.log('enemyAlan', enemyAlan)
+    
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
@@ -132,10 +128,7 @@ export default class MainScene extends Phaser.Scene {
     // this.parallax.start()
 
     if (this.cursors.up.isDown) {
-      this.setPlayerVelocity -= 10
-      this.player.setVelocityY(this.setPlayerVelocity)
-    } else {
-      this.setPlayerVelocity < 0 ? (this.setPlayerVelocity += 10) : null
+      this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
