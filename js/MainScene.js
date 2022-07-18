@@ -5,14 +5,16 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    this.cursors
-    this.player
-    this.setPlayerVelocity = -50
-    this.enemyAlan
-    this.enemyBonBon
-    this.enemyLips
-    this.platforms
+    // this.cursors
+    // this.player
+    // this.setPlayerVelocity = -50
+    // this.enemyAlan
+    // this.enemyBonBon
+    // this.enemyLips
+    // this.belowPlatforms
+    // this.abovePlatforms
   }
+
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
     this.load.image('clouds1', 'assets/parallax/clouds_1.png')
@@ -38,14 +40,17 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.image('platform', 'assets/minipixel/spikes.png')
+    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
   }
 
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
+    // this.walls = new MovingWalls(this.game)
+
     const width = this.scale.width
     const height = this.scale.height
+    // this.platformsetImmovable(true)
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
@@ -67,28 +72,49 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
-    // this.platforms = this.physics.add.group()
-    // for (let i = 0; i < 1; ++i) {
-    //   const x = Phaser.Math.Between(400, 2000)
-    //   const y = 40 * i
+    this.belowPlatforms = this.physics.add.group()
 
-    //   const platform = this.platforms
-    //     .create(x, y, 'platform')
-    //     .setGravity(0, -330)
-    //     .setVelocityX(-200)
-    //   console.log(platform)
-    //   // this.platforms.angle(90)
-    //   platform.scale = 3
+    this.abovePlatforms = this.physics.add.group()
 
-    //   const body = platform.body
-    //   body.updateFromGameObject()
-    // }
+    // this.platforms.angle(90)
+    const startingObstacleDistance = 2000
+    const minXGap = 500
+    const maxXGap = 1000
 
-    this.platform = this.physics.add
-      .sprite(1920, 750, 'platform')
-      .setSize(50, 50, true) //164x160
-      .setGravity(0, -330)
-      .setVelocityX(-200)
+    let screenHeight = 700
+    let yGap = 800
+
+    let x = startingObstacleDistance
+    let y = Phaser.Math.Between(0, screenHeight - yGap)
+
+    for (let i = 0; i < 5; ++i) {
+      const belowPlatforms = this.belowPlatforms
+        .create(x, y + yGap, 'platform')
+        .setGravity(0, -330)
+        .setVelocityX(-200)
+      belowPlatforms.scale = 1
+
+      const abovePlatforms = this.abovePlatforms
+        .create(x, y, 'platform')
+        .setGravity(0, -330)
+        .setVelocityX(-200)
+      abovePlatforms.scale = 1
+
+      const body = belowPlatforms.body
+      body.updateFromGameObject()
+
+      const body2 = abovePlatforms.body
+      body2.updateFromGameObject()
+
+      x = x + Phaser.Math.Between(minXGap, maxXGap)
+      y = Phaser.Math.Between(0, screenHeight - yGap)
+    }
+
+    // this.platform = this.physics.add
+    //   .sprite(1920, 750, 'platform')
+    //   .setSize(50, 50, true) //164x160
+    //   .setGravity(0, -330)
+    //   .setVelocityX(-200)
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
@@ -161,8 +187,8 @@ export default class MainScene extends Phaser.Scene {
         this.enemyAlan,
         this.enemyBonBon,
         this.enemyLips,
-        this.platform,
-        // this.platformsChildren,
+        this.abovePlatforms,
+        this.belowPlatforms,
       ],
       this.hitEnemy,
       null,
