@@ -11,14 +11,13 @@ export class Laser extends Phaser.Physics.Arcade.Sprite {
       this.setActive(true)
       this.setVisible(true)
 
-      // set delay between shots
-      // this.scene.time.addEvent({
-      //   delay: 300,
-      //   callback: () => {
-      //     this.setActive(true)
-      //     this.setVisible(true)
-      //   }
-      // })
+      // Destroy bullet once off screen
+      this.scene.time.addEvent({
+        delay: 10000,
+        callback: () => {
+          this.destroy()
+        }
+      })
   }
 }
 
