@@ -1,6 +1,6 @@
 import ParallaxScene from './ParallaxScene.js'
 import Title from './Title.js'
-import GameOver from './GameOver.js';
+import GameOver from './GameOver.js'
 import MainScene from './MainScene.js'
 
 const config = {
