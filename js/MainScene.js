@@ -31,6 +31,10 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
+    this.load.spritesheet('Lips', 'assets/minipixel/Enemies/Lips.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
   }
 
   create() {
@@ -69,29 +73,47 @@ export default class MainScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
-    // this.enemyAlan = new Enemy(this)
-
     // console.log('enemyAlan', enemyAlan)
-    this.enemyAlan = this.add.sprite(900, 100, 'Alan')
-    this.enemyAlan.setScale(5)
     this.anims.create({
       key: 'idle',
-      frames: this.anims.generateFrameNumbers('Alan', { start: 0, end: 5 }),
+      frames: this.anims.generateFrameNumbers('Alan'),
       frameRate: 10,
       repeat: -1,
     })
-    this.enemyAlan.anims.play('idle', true)
 
-    this.enemyBonBon = this.add.sprite(600, 500, 'Bonbon')
-    this.enemyBonBon.setScale(5)
+    const enemyAlan = this.add.sprite(2000, 100, 'Alan').setScale(5)
+
+    enemyAlan.play('idle', true)
+
     this.anims.create({
       key: 'idle1',
-      frames: this.anims.generateFrameNumbers('Bonbon', { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers('Bonbon'),
       frameRate: 10,
       repeat: -1,
     })
-    this.enemyBonBon.anims.play('idle1', true)
 
+    const enemyBonBon = this.add.sprite(3000, 500, 'Bonbon').setScale(5)
+
+    enemyBonBon.play('idle1', true)
+
+    this.anims.create({
+      key: 'idle2',
+      frames: this.anims.generateFrameNumbers('Lips'),
+      frameRate: 10,
+      repeat: -1,
+    })
+
+    const enemyLips = this.add.sprite(5000, 600, 'Lips').setScale(5)
+
+    enemyLips.play('idle2', true)
+
+    this.tweens.add({
+      targets: [enemyAlan, enemyBonBon, enemyLips],
+      x: 0,
+      duration: 8800,
+      ease: 'Linear',
+      yoyo: true,
+    })
     // this.parallax = new ParallaxScene(this)
   }
 
