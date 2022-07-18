@@ -7,7 +7,7 @@ const config = {
   type: Phaser.AUTO,
   width: 1920,
   height: 800,
-  backgroundColor: '#333333',
+  backgroundColor: '#433333',
   parent: 'dev-invaders',
   physics: {
     default: 'arcade',

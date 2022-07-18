@@ -13,7 +13,7 @@ export default class Title extends Phaser.Scene {
     var text = this.add.text(
         640, 
         360, 
-        "Title", 
+        "Dev Invaders", 
         {
             fontSize: 50,
             color: "#000000",
