@@ -10,14 +10,6 @@ export class Laser extends Phaser.Physics.Arcade.Sprite {
     this.setGravity(0, -330)
     this.setActive(true)
     this.setVisible(true)
-
-    // Destroy bullet once off screen
-    this.scene.time.addEvent({
-      delay: 10000,
-      callback: () => {
-        this.destroy()
-      },
-    })
   }
 }
 
@@ -26,7 +18,7 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group {
     super(scene.physics.world, scene)
 
     this.createMultiple({
-      frameQuantity: 1000,
+      frameQuantity: 10,
       key: 'laser',
       active: false,
       visible: false,
