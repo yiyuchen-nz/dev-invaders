@@ -5,16 +5,16 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    this.cursors
-    this.player
-    this.setPlayerVelocity = -50
-    this.enemyAlan
-    this.enemyBonBon
-    this.enemyLips
-    this.laserGroup
-    this.kaboom
-    this.belowPlatforms
-    this.abovePlatforms
+    // this.cursors
+    // this.player
+    //this.setPlayerVelocity = -50
+    // this.enemyAlan
+    // this.enemyBonBon
+    // this.enemyLips
+    // this.laserGroup
+    // this.kaboom
+    // this.belowPlatforms
+    // this.abovePlatforms
   }
 
   preload() {
@@ -191,14 +191,16 @@ export default class MainScene extends Phaser.Scene {
     // console.log('this.platforms', this.platforms)
     this.physics.add.collider(
       this.player,
-      [
-        this.enemyAlan,
-        this.enemyBonBon,
-        this.enemyLips,
-        this.abovePlatforms,
-        this.belowPlatforms,
-      ],
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       this.hitEnemy,
+      null,
+      this
+    )
+
+    this.physics.add.collider(
+      this.player,
+      [this.abovePlatforms, this.belowPlatforms],
+      this.hitPlatform,
       null,
       this
     )
@@ -207,6 +209,14 @@ export default class MainScene extends Phaser.Scene {
       this.laserGroup,
       [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       this.fireEnemy,
+      null,
+      this
+    )
+
+    this.physics.add.collider(
+      this.laserGroup,
+      [this.abovePlatforms, this.belowPlatforms],
+      this.firePlatform,
       null,
       this
     )
@@ -222,7 +232,19 @@ export default class MainScene extends Phaser.Scene {
     player.setTint(0xff0000)
     enemy.destroy()
     this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
-    player.destroy()
+    this.player.setVisible(false)
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.gameOver()
+      },
+    })
+  }
+
+  hitPlatform(player, platform) {
+    player.setTint(0xff0000)
+    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
       callback: () => {
@@ -234,10 +256,22 @@ export default class MainScene extends Phaser.Scene {
   fireEnemy(enemy, laser) {
     enemy.setTint(0xff0000)
     enemy.destroy()
-    this.add.sprite(enemy.x, enemy.y, 'kaboom').setScale(5).play('explosion')
+    this.Kaboom = this.add
+      .sprite(enemy.x, enemy.y, 'kaboom')
+      .setScale(5)
+      .play('explosion')
     laser.destroy()
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.Kaboom.destroy()
+      },
+    })
   }
 
+  firePlatform(platform, laser) {
+    laser.destroy()
+  }
   gameOver() {
     this.scene.start('GameOver')
   }
