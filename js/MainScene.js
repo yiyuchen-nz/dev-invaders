@@ -11,11 +11,12 @@ export default class MainScene extends Phaser.Scene {
     this.enemyAlan
     this.enemyBonBon
     this.enemyLips
-    this.platforms
     this.laserGroup
     this.kaboom
-    // this.shootingSound
+    this.belowPlatforms
+    this.abovePlatforms
   }
+
   preload() {
     this.load.image('sky', 'assets/parallax/sky.png')
     this.load.image('clouds1', 'assets/parallax/clouds_1.png')
@@ -46,16 +47,17 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.image('platform', 'assets/minipixel/spikes.png')
-
-    //this.load.audioSprite('pewPew', 'assets/minipixel/player-fire.wav')
+    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
   }
 
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
+    // this.walls = new MovingWalls(this.game)
+
     const width = this.scale.width
     const height = this.scale.height
+    // this.platformsetImmovable(true)
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
@@ -77,35 +79,49 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
-    // this.platforms = this.physics.add.group()
-    // for (let i = 0; i < 1; ++i) {
-    //   const x = Phaser.Math.Between(400, 2000)
-    //   const y = 40 * i
+    this.belowPlatforms = this.physics.add.group()
 
-    //   const platform = this.platforms
-    //     .create(x, y, 'platform')
-    //     .setGravity(0, -330)
-    //     .setVelocityX(-200)
-    //   console.log(platform)
-    //   // this.platforms.angle(90)
-    //   platform.scale = 3
+    this.abovePlatforms = this.physics.add.group()
 
-    //   const body = platform.body
-    //   body.updateFromGameObject()
-    // }
-    this.platforms = this.physics.add.group()
-    for (var i = 0; i < 20; i++) {
-      this.platform = this.physics.add
-        .sprite(
-          Phaser.Math.Between(0, this.game.config.width),
-          600, //Phaser.Math.Between(0, this.game.config.height)
-          'platform'
-        )
-        .setSize(50, 50, true) //164x160
+    // this.platforms.angle(90)
+    const startingObstacleDistance = 2000
+    const minXGap = 500
+    const maxXGap = 1000
+
+    let screenHeight = 700
+    let yGap = 800
+
+    let x = startingObstacleDistance
+    let y = Phaser.Math.Between(0, screenHeight - yGap)
+
+    for (let i = 0; i < 5; ++i) {
+      const belowPlatforms = this.belowPlatforms
+        .create(x, y + yGap, 'platform')
         .setGravity(0, -330)
-        .setVelocityX(-50)
+        .setVelocityX(-200)
+      belowPlatforms.scale = 1
+
+      const abovePlatforms = this.abovePlatforms
+        .create(x, y, 'platform')
+        .setGravity(0, -330)
+        .setVelocityX(-200)
+      abovePlatforms.scale = 1
+
+      const body = belowPlatforms.body
+      body.updateFromGameObject()
+
+      const body2 = abovePlatforms.body
+      body2.updateFromGameObject()
+
+      x = x + Phaser.Math.Between(minXGap, maxXGap)
+      y = Phaser.Math.Between(0, screenHeight - yGap)
     }
-    this.groupPlatforms = this.platforms.getChildren()
+
+    // this.platform = this.physics.add
+    //   .sprite(1920, 750, 'platform')
+    //   .setSize(50, 50, true) //164x160
+    //   .setGravity(0, -330)
+    //   .setVelocityX(-200)
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
@@ -156,12 +172,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [
-        this.enemyAlan,
-        this.enemyBonBon,
-        this.enemyLips,
-        // this.platforms,
-      ],
+      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       x: 0,
       duration: 8800,
       ease: 'Linear',
@@ -184,8 +195,8 @@ export default class MainScene extends Phaser.Scene {
         this.enemyAlan,
         this.enemyBonBon,
         this.enemyLips,
-        this.platform,
-        //this.groupPlatforms.splice(','),
+        this.abovePlatforms,
+        this.belowPlatforms,
       ],
       this.hitEnemy,
       null,
@@ -194,7 +205,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.physics.add.collider(
       this.laserGroup,
-      [this.enemyAlan, this.enemyBonBon, this.enemyLips, this.platform],
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       this.fireEnemy,
       null,
       this
@@ -204,7 +215,6 @@ export default class MainScene extends Phaser.Scene {
 
   fireBullet() {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
-    //this.shootingSound.playAudioSprite('pewPew', space)
   }
 
   hitEnemy(player, enemy) {
@@ -213,7 +223,6 @@ export default class MainScene extends Phaser.Scene {
     enemy.destroy()
     this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
     player.destroy()
-    console.log('enemy', enemy)
     this.time.addEvent({
       delay: 1000,
       callback: () => {
@@ -248,7 +257,6 @@ export default class MainScene extends Phaser.Scene {
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
-      console.log(this.laserGroup)
     }
 
     // if the player leaves the screen game over

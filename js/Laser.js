@@ -4,20 +4,20 @@ export class Laser extends Phaser.Physics.Arcade.Sprite {
   }
 
   fire(x, y) {
-      this.body.reset(x, y)
-      this.setVelocityX(900)
-      // refactor this with only gravity for player
-      this.setGravity(0, -330)
-      this.setActive(true)
-      this.setVisible(true)
+    this.body.reset(x, y)
+    this.setVelocityX(900)
+    // refactor this with only gravity for player
+    this.setGravity(0, -330)
+    this.setActive(true)
+    this.setVisible(true)
 
-      // Destroy bullet once off screen
-      this.scene.time.addEvent({
-        delay: 10000,
-        callback: () => {
-          this.destroy()
-        }
-      })
+    // Destroy bullet once off screen
+    this.scene.time.addEvent({
+      delay: 10000,
+      callback: () => {
+        this.destroy()
+      },
+    })
   }
 }
 
