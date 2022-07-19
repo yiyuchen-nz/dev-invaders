@@ -6,16 +6,16 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    this.cursors
-    this.player
-    this.setPlayerVelocity = -50
-    this.enemyAlan
-    this.enemyBonBon
-    this.enemyLips
-    this.laserGroup
-    this.kaboom
-    this.belowPlatforms
-    this.abovePlatforms
+    // this.cursors
+    // this.player
+    //this.setPlayerVelocity = -50
+    // this.enemyAlan
+    // this.enemyBonBon
+    // this.enemyLips
+    // this.laserGroup
+    // this.kaboom
+    // this.belowPlatforms
+    // this.abovePlatforms
   }
 
   preload() {
@@ -48,17 +48,23 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
+    this.load.image('platform', 'assets/obstacles/towerAlt.png')
+    this.load.image('platform2', 'assets/obstacles/cactus1.png')
+
+    this.load.audio('bg-music', 'assets/sound/bg-music.mp3')
+    this.load.audio('player-explosion', 'assets/sound/player-explosion.wav')
+    this.load.audio('laserSound', 'assets/sound/laser.wav')
+    this.load.audio('enemy-explosion', 'assets/sound/short-explosion.wav')
   }
 
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
-    // this.walls = new MovingWalls(this.game)
+    this.music = this.sound.add('bg-music', { loop: true })
+    this.music.play()
 
     const width = this.scale.width
     const height = this.scale.height
-    // this.platformsetImmovable(true)
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
@@ -81,10 +87,7 @@ export default class MainScene extends Phaser.Scene {
       .setOrigin(0, 0)
 
     this.belowPlatforms = this.physics.add.group()
-
     this.abovePlatforms = this.physics.add.group()
-
-    // this.platforms.angle(90)
     const startingObstacleDistance = 2000
     const minXGap = 500
     const maxXGap = 1000
@@ -95,18 +98,19 @@ export default class MainScene extends Phaser.Scene {
     let x = startingObstacleDistance
     let y = Phaser.Math.Between(0, screenHeight - yGap)
 
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < 20; ++i) {
       const belowPlatforms = this.belowPlatforms
-        .create(x, y + yGap, 'platform')
+        .create(x, y + yGap, 'platform2')
         .setGravity(0, -330)
         .setVelocityX(-200)
-      belowPlatforms.scale = 1
+      belowPlatforms.scale = 2
 
       const abovePlatforms = this.abovePlatforms
         .create(x, y, 'platform')
         .setGravity(0, -330)
         .setVelocityX(-200)
-      abovePlatforms.scale = 1
+
+      abovePlatforms.scale = 2
 
       const body = belowPlatforms.body
       body.updateFromGameObject()
@@ -118,16 +122,8 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-    // this.platform = this.physics.add
-    //   .sprite(1920, 750, 'platform')
-    //   .setSize(50, 50, true) //164x160
-    //   .setGravity(0, -330)
-    //   .setVelocityX(-200)
-
-    
-
-    this.player = this.physics.add.sprite(50, 0, 'dude')
-    this.player.setScale(0.3)
+    this.player = this.physics.add.sprite(100, 0, 'dude')
+    this.player.setScale(0.2)
     // this.player.setCollideWorldBounds(true)
 
     
@@ -174,24 +170,29 @@ export default class MainScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'explosion',
-      frames: this.anims.generateFrameNumbers('kaboom', { start: 0, end: 5 }),
+      frames: this.anims.generateFrameNumbers('kaboom'),
       frameRate: 5,
     })
 
     // this.parallax = new ParallaxScene(this)
 
-    // let platformsChildren = this.platforms.getChildren()
-    // console.log('this.platforms', this.platforms)
+    // player v enemy - with explosion, gameover
+    // player v platform - with explosion, gameover
+    // laser v enemy - with explosion
+    // laser v platform
+
     this.physics.add.collider(
       this.player,
-      [
-        this.enemyAlan,
-        this.enemyBonBon,
-        this.enemyLips,
-        this.abovePlatforms,
-        this.belowPlatforms,
-      ],
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       this.hitEnemy,
+      null,
+      this
+    )
+
+    this.physics.add.collider(
+      this.player,
+      [this.abovePlatforms, this.belowPlatforms],
+      this.hitPlatform,
       null,
       this
     )
@@ -203,7 +204,29 @@ export default class MainScene extends Phaser.Scene {
       null,
       this
     )
-    //this.shootingSound = this.add.audioSprite('pewPew')
+
+    this.physics.add.overlap(
+      this.laserGroup,
+      [this.abovePlatforms, this.belowPlatforms],
+      this.firePlatform
+    )
+
+    this.playerExplosion = this.sound.add('player-explosion')
+    this.laserSound = this.sound.add('laserSound')
+    this.enemyExplosion = this.sound.add('enemy-explosion')
+  }
+
+  kaboom(player) {
+    this.Kaboom = this.add
+      .sprite(player.x, player.y, 'kaboom')
+      .setScale(10)
+      .play('explosion')
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.Kaboom.destroy()
+      },
+    })
   }
 
   fireBullet() {
@@ -218,8 +241,22 @@ export default class MainScene extends Phaser.Scene {
     this.physics.pause()
     player.setTint(0xff0000)
     enemy.destroy()
-    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
-    player.destroy()
+    this.kaboom(player)
+    this.playerExplosion.play()
+    this.player.setVisible(false)
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.gameOver()
+      },
+    })
+  }
+
+  hitPlatform(player, platform) {
+    player.setTint(0xff0000)
+    this.kaboom(player)
+    this.playerExplosion.play()
+    this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
       callback: () => {
@@ -230,13 +267,29 @@ export default class MainScene extends Phaser.Scene {
 
   fireEnemy(enemy, laser) {
     enemy.setTint(0xff0000)
+    this.kaboom(enemy)
     enemy.destroy()
-    this.add.sprite(enemy.x, enemy.y, 'kaboom').setScale(5).play('explosion')
+    this.enemyExplosion.play()
+    laser.setVisible(false)
+  }
+
+  firePlatform(laser, platform) {
     laser.destroy()
   }
 
   gameOver() {
     this.scene.start('GameOver')
+    this.music.pause()
+  }
+
+  resetBullet() {
+    this.laserGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
   }
 
   update() {
@@ -249,17 +302,21 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax.start()
 
+    this.resetBullet()
+
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
       this.activateEnemy()
+      this.laserSound.play()
     }
 
     // if the player leaves the screen game over
     if (!this.cameras.main.worldView.contains(this.player.x, this.player.y)) {
       // this.scene.launch overlays scenes
+      this.playerExplosion.play()
       this.gameOver()
     }
   }
