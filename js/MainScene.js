@@ -47,8 +47,10 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
-    this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
+    this.load.image('platform', 'assets/obstacles/towerAlt.png')
+    this.load.image('platform2', 'assets/obstacles/cactus1.png')
 
+    this.load.audio('bg-music', 'assets/sound/bg-music.mp3')
     this.load.audio('player-explosion', 'assets/sound/player-explosion.wav')
     this.load.audio('laserSound', 'assets/sound/laser.wav')
     this.load.audio('enemy-explosion', 'assets/sound/short-explosion.wav')
@@ -56,6 +58,9 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
+
+    this.music = this.sound.add('bg-music', { loop: true })
+    this.music.play()
 
     const width = this.scale.width
     const height = this.scale.height
@@ -94,19 +99,19 @@ export default class MainScene extends Phaser.Scene {
     let x = startingObstacleDistance
     let y = Phaser.Math.Between(0, screenHeight - yGap)
 
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < 20; ++i) {
       const belowPlatforms = this.belowPlatforms
-        .create(x, y + yGap, 'platform')
+        .create(x, y + yGap, 'platform2')
         .setGravity(0, -330)
         .setVelocityX(-200)
-      belowPlatforms.scale = 1
+      belowPlatforms.scale = 2
 
       const abovePlatforms = this.abovePlatforms
         .create(x, y, 'platform')
         .setGravity(0, -330)
         .setVelocityX(-200)
 
-      abovePlatforms.scale = 1
+      abovePlatforms.scale = 2
 
       const body = belowPlatforms.body
       body.updateFromGameObject()
@@ -118,8 +123,8 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-    this.player = this.physics.add.sprite(50, 0, 'dude')
-    this.player.setScale(0.3)
+    this.player = this.physics.add.sprite(100, 0, 'dude')
+    this.player.setScale(0.2)
     // this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
@@ -281,6 +286,7 @@ export default class MainScene extends Phaser.Scene {
 
   gameOver() {
     this.scene.start('GameOver')
+    this.music.pause()
   }
 
   resetBullet() {
