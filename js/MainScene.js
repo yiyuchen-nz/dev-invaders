@@ -53,11 +53,8 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
-    // this.walls = new MovingWalls(this.game)
-
     const width = this.scale.width
     const height = this.scale.height
-    // this.platformsetImmovable(true)
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
     this.clouds1 = this.add
@@ -83,7 +80,6 @@ export default class MainScene extends Phaser.Scene {
 
     this.abovePlatforms = this.physics.add.group()
 
-    // this.platforms.angle(90)
     const startingObstacleDistance = 2000
     const minXGap = 500
     const maxXGap = 1000
@@ -116,12 +112,6 @@ export default class MainScene extends Phaser.Scene {
       x = x + Phaser.Math.Between(minXGap, maxXGap)
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
-
-    // this.platform = this.physics.add
-    //   .sprite(1920, 750, 'platform')
-    //   .setSize(50, 50, true) //164x160
-    //   .setGravity(0, -330)
-    //   .setVelocityX(-200)
 
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
@@ -187,8 +177,25 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax = new ParallaxScene(this)
 
-    // let platformsChildren = this.platforms.getChildren()
-    // console.log('this.platforms', this.platforms)
+    // player v enemy - with explosion, gameover
+    // player v platform - with explosion, gameover
+    // laser v enemy - with explosion
+    // laser v platform
+
+    // this.physics.add.collider(
+    //   [this.player, this.laserGroup],
+    //   [
+    //     this.enemyAlan,
+    //     this.enemyBonBon,
+    //     this.enemyLips,
+    //     this.abovePlatforms,
+    //     this.belowPlatforms,
+    //   ],
+    //   this.collision,
+    //   null,
+    //   this
+    // )
+
     this.physics.add.collider(
       this.player,
       [this.enemyAlan, this.enemyBonBon, this.enemyLips],
@@ -213,14 +220,27 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
-    this.physics.add.collider(
-      this.laserGroup,
-      [this.abovePlatforms, this.belowPlatforms],
-      this.firePlatform,
-      null,
-      this
-    )
-    //this.shootingSound = this.add.audioSprite('pewPew')
+    // this.physics.add.collider(
+    //   this.laserGroup,
+    //   [this.abovePlatforms, this.belowPlatforms],
+    //   this.firePlatform,
+    //   null,
+    //   this
+    // )
+
+    // this.shootingSound = this.add.audioSprite('pewPew')
+  }
+
+  // collision(obj1, obj2) {
+  //   if (obj1 === this.player) {
+  //     this.gameOver()
+  //   } else {
+  //     console.log('collision else')
+  //   }
+  // }
+
+  kaboom(player) {
+    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
   }
 
   fireBullet() {
@@ -231,7 +251,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.pause()
     player.setTint(0xff0000)
     enemy.destroy()
-    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    this.kaboom(player)
     this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
@@ -243,7 +263,7 @@ export default class MainScene extends Phaser.Scene {
 
   hitPlatform(player, platform) {
     player.setTint(0xff0000)
-    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    this.kaboom(player)
     this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
@@ -256,10 +276,7 @@ export default class MainScene extends Phaser.Scene {
   fireEnemy(enemy, laser) {
     enemy.setTint(0xff0000)
     enemy.destroy()
-    this.Kaboom = this.add
-      .sprite(enemy.x, enemy.y, 'kaboom')
-      .setScale(5)
-      .play('explosion')
+    this.Kaboom = this.kaboom(enemy)
     laser.destroy()
     this.time.addEvent({
       delay: 500,
@@ -269,7 +286,7 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
-  firePlatform(platform, laser) {
+  firePlatform(laser, platform) {
     laser.destroy()
   }
   gameOver() {
