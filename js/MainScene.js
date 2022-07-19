@@ -48,6 +48,10 @@ export default class MainScene extends Phaser.Scene {
     })
 
     this.load.image('platform', 'assets/minipixel/verticalPlatform.png')
+
+    this.load.audio('player-explosion', 'assets/sound/player-explosion.wav')
+    this.load.audio('laserSound', 'assets/sound/laser.wav')
+    this.load.audio('enemy-explosion', 'assets/sound/short-explosion.wav')
   }
 
   create() {
@@ -101,6 +105,7 @@ export default class MainScene extends Phaser.Scene {
         .create(x, y, 'platform')
         .setGravity(0, -330)
         .setVelocityX(-200)
+
       abovePlatforms.scale = 1
 
       const body = belowPlatforms.body
@@ -171,7 +176,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'explosion',
-      frames: this.anims.generateFrameNumbers('kaboom', { start: 0, end: 5 }),
+      frames: this.anims.generateFrameNumbers('kaboom'),
       frameRate: 5,
     })
 
@@ -181,20 +186,6 @@ export default class MainScene extends Phaser.Scene {
     // player v platform - with explosion, gameover
     // laser v enemy - with explosion
     // laser v platform
-
-    // this.physics.add.collider(
-    //   [this.player, this.laserGroup],
-    //   [
-    //     this.enemyAlan,
-    //     this.enemyBonBon,
-    //     this.enemyLips,
-    //     this.abovePlatforms,
-    //     this.belowPlatforms,
-    //   ],
-    //   this.collision,
-    //   null,
-    //   this
-    // )
 
     this.physics.add.collider(
       this.player,
@@ -220,27 +211,28 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
-    // this.physics.add.collider(
-    //   this.laserGroup,
-    //   [this.abovePlatforms, this.belowPlatforms],
-    //   this.firePlatform,
-    //   null,
-    //   this
-    // )
+    this.physics.add.overlap(
+      this.laserGroup,
+      [this.abovePlatforms, this.belowPlatforms],
+      this.firePlatform
+    )
 
-    // this.shootingSound = this.add.audioSprite('pewPew')
+    this.playerExplosion = this.sound.add('player-explosion')
+    this.laserSound = this.sound.add('laserSound')
+    this.enemyExplosion = this.sound.add('enemy-explosion')
   }
 
-  // collision(obj1, obj2) {
-  //   if (obj1 === this.player) {
-  //     this.gameOver()
-  //   } else {
-  //     console.log('collision else')
-  //   }
-  // }
-
   kaboom(player) {
-    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    this.Kaboom = this.add
+      .sprite(player.x, player.y, 'kaboom')
+      .setScale(10)
+      .play('explosion')
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.Kaboom.destroy()
+      },
+    })
   }
 
   fireBullet() {
@@ -252,6 +244,7 @@ export default class MainScene extends Phaser.Scene {
     player.setTint(0xff0000)
     enemy.destroy()
     this.kaboom(player)
+    this.playerExplosion.play()
     this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
@@ -264,6 +257,7 @@ export default class MainScene extends Phaser.Scene {
   hitPlatform(player, platform) {
     player.setTint(0xff0000)
     this.kaboom(player)
+    this.playerExplosion.play()
     this.player.setVisible(false)
     this.time.addEvent({
       delay: 1000,
@@ -275,22 +269,29 @@ export default class MainScene extends Phaser.Scene {
 
   fireEnemy(enemy, laser) {
     enemy.setTint(0xff0000)
+    this.kaboom(enemy)
     enemy.destroy()
-    this.Kaboom = this.kaboom(enemy)
-    laser.destroy()
-    this.time.addEvent({
-      delay: 500,
-      callback: () => {
-        this.Kaboom.destroy()
-      },
-    })
+    this.enemyExplosion.play()
+    laser.setVisible(false)
   }
 
   firePlatform(laser, platform) {
     laser.destroy()
   }
+
   gameOver() {
     this.scene.start('GameOver')
+  }
+
+  resetBullet() {
+    this.laserGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        console.log('laser', laser)
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
   }
 
   update() {
@@ -303,16 +304,20 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax.start()
 
+    this.resetBullet()
+
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
+      this.laserSound.play()
     }
 
     // if the player leaves the screen game over
     if (!this.cameras.main.worldView.contains(this.player.x, this.player.y)) {
       // this.scene.launch overlays scenes
+      this.playerExplosion.play()
       this.gameOver()
     }
   }
