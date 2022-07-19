@@ -124,26 +124,17 @@ export default class MainScene extends Phaser.Scene {
     //   .setGravity(0, -330)
     //   .setVelocityX(-200)
 
+    
+
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
     // this.player.setCollideWorldBounds(true)
 
+    
+    this.cursors = this.input.keyboard.createCursorKeys()
+
     this.laserGroup = new LaserGroup(this)
     this.enemyGroup = new EnemyGroup(this)
-
-    this.cursors = this.input.keyboard.createCursorKeys()
-    this.anims.create({
-      key: 'idle',
-      frames: this.anims.generateFrameNumbers('Alan'),
-      frameRate: 10,
-      repeat: -1,
-    })
-
-    this.enemyAlan = this.physics.add
-      .sprite(3000, 300, 'Alan')
-      .setScale(5)
-      .setGravity(0, -330)
-    this.enemyAlan.play('idle', true)
 
     this.anims.create({
       key: 'idle1',
@@ -174,7 +165,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      targets: [this.enemyBonBon, this.enemyLips],
       x: 0,
       duration: 8800,
       ease: 'Linear',

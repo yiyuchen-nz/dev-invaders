@@ -5,7 +5,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     // this.body.play('idle', true)
   }
 
-  fire(x, y) {
+  move(x, y) {
     this.body.reset(x, y)
     this.setVelocityX(-100)
     // refactor this with only gravity for player
@@ -30,20 +30,26 @@ export default class EnemyGroup extends Phaser.Physics.Arcade.Group {
 
     this.scene.anims.create({
       key: 'idle',
-      frames: this.scene.anims.generateFrameNumbers('Alan', { start: 0, end: 5 }),
+      frames: this.scene.anims.generateFrameNumbers('Alan'),
       frameRate: 10,
       repeat: -1,
     })
 
+    this.playAnimation('idle')
+
+
+
+      // Enemy starting coordintes
       this.x = 700
       this.y = 100
-
   }
 
   activateEnemy() {
     const enemy = this.getFirstDead(false)
+    
       if (enemy) {
-        enemy.fire(this.x, this.y)
+        
+        enemy.move(this.x, this.y)
       }
   }
 }
