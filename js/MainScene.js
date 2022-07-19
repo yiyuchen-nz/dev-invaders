@@ -5,14 +5,16 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    // this.cursors
-    // this.player
-    // this.setPlayerVelocity = -50
-    // this.enemyAlan
-    // this.enemyBonBon
-    // this.enemyLips
-    // this.belowPlatforms
-    // this.abovePlatforms
+    this.cursors
+    this.player
+    this.setPlayerVelocity = -50
+    this.enemyAlan
+    this.enemyBonBon
+    this.enemyLips
+    this.laserGroup
+    this.kaboom
+    this.belowPlatforms
+    this.abovePlatforms
   }
 
   preload() {
@@ -26,6 +28,11 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
     this.load.image('laser', 'assets/minipixel/flaming_meteor.png')
+
+    this.load.spritesheet('kaboom', 'assets/minipixel/Effects/Explosion.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    })
 
     this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -165,16 +172,17 @@ export default class MainScene extends Phaser.Scene {
     this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [
-        this.enemyAlan,
-        this.enemyBonBon,
-        this.enemyLips,
-        // this.platforms,
-      ],
+      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
       x: 0,
       duration: 8800,
       ease: 'Linear',
       yoyo: true,
+    })
+
+    this.anims.create({
+      key: 'explosion',
+      frames: this.anims.generateFrameNumbers('kaboom', { start: 0, end: 5 }),
+      frameRate: 5,
     })
 
     // this.parallax = new ParallaxScene(this)
@@ -194,6 +202,15 @@ export default class MainScene extends Phaser.Scene {
       null,
       this
     )
+
+    this.physics.add.collider(
+      this.laserGroup,
+      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      this.fireEnemy,
+      null,
+      this
+    )
+    //this.shootingSound = this.add.audioSprite('pewPew')
   }
 
   fireBullet() {
@@ -204,7 +221,21 @@ export default class MainScene extends Phaser.Scene {
     this.physics.pause()
     player.setTint(0xff0000)
     enemy.destroy()
-    this.gameOver()
+    this.add.sprite(player.x, player.y, 'kaboom').setScale(10).play('explosion')
+    player.destroy()
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.gameOver()
+      },
+    })
+  }
+
+  fireEnemy(enemy, laser) {
+    enemy.setTint(0xff0000)
+    enemy.destroy()
+    this.add.sprite(enemy.x, enemy.y, 'kaboom').setScale(5).play('explosion')
+    laser.destroy()
   }
 
   gameOver() {
