@@ -292,7 +292,6 @@ export default class MainScene extends Phaser.Scene {
   resetBullet() {
     this.laserGroup.children.entries.forEach((laser) => {
       if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
-        console.log('laser', laser)
         laser.body.reset(laser.x, laser.y)
         laser.setActive(false)
         laser.setVisible(false)
