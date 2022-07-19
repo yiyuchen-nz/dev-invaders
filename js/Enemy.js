@@ -1,6 +1,6 @@
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    super(scene, x, y, 'Alan')
+    super(scene, x, y, 'laser')
 
     // this.body.play('idle', true)
   }
@@ -21,7 +21,7 @@ export default class EnemyGroup extends Phaser.Physics.Arcade.Group {
 
     this.createMultiple({
       frameQuantity: 2,
-      key: 'Alan',
+      key: 'laser',
       active: false,
       visible: false,
       setScale: { x: 3, y: 3 },
@@ -37,18 +37,14 @@ export default class EnemyGroup extends Phaser.Physics.Arcade.Group {
 
     this.playAnimation('idle')
 
-
-
-      // Enemy starting coordintes
-      this.x = 700
-      this.y = 100
+    // Enemy starting coordintes
+    this.x = 700
+    this.y = 100
   }
 
   activateEnemy() {
     const enemy = this.getFirstDead(false)
-    
       if (enemy) {
-        
         enemy.move(this.x, this.y)
       }
   }
