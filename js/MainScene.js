@@ -134,7 +134,7 @@ export default class MainScene extends Phaser.Scene {
       this.alan = this.alanGroup
         .create(i * 100, 300, 'Alan')
         .setGravity(0, -330)
-      // .setVelocityX(-200)
+        .setVelocityX(-200)
       this.alan.play('idle', true)
 
       this.alan.scale = 10
@@ -197,7 +197,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(
       this.player,
       [
-        this.alan,
+        this.alanGroup,
         this.enemyBonBon,
         this.enemyLips,
         this.abovePlatforms,
@@ -210,7 +210,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.physics.add.collider(
       this.laserGroup,
-      [this.alan, this.enemyBonBon, this.enemyLips],
+      [this.alanGroup, this.enemyBonBon, this.enemyLips],
       this.fireEnemy,
       null,
       this
