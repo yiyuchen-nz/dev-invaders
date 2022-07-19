@@ -51,10 +51,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
-
-    // this.walls = new MovingWalls(this.game)
-
     const width = this.scale.width
     const height = this.scale.height
     // this.platformsetImmovable(true)
@@ -117,12 +113,6 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-    // this.platform = this.physics.add
-    //   .sprite(1920, 750, 'platform')
-    //   .setSize(50, 50, true) //164x160
-    //   .setGravity(0, -330)
-    //   .setVelocityX(-200)
-
     this.player = this.physics.add.sprite(50, 0, 'dude')
     this.player.setScale(0.3)
     // this.player.setCollideWorldBounds(true)
@@ -130,6 +120,9 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
+
+    this.alanGroup = this.physics.add.group()
+
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
@@ -137,11 +130,23 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
 
-    this.enemyAlan = this.physics.add
-      .sprite(3000, 300, 'Alan')
-      .setScale(5)
-      .setGravity(0, -330)
-    this.enemyAlan.play('idle', true)
+    for (let i = 0; i < 5; ++i) {
+      this.alan = this.alanGroup
+        .create(i * 100, 300, 'Alan')
+        .setGravity(0, -330)
+      // .setVelocityX(-200)
+      this.alan.play('idle', true)
+
+      this.alan.scale = 10
+
+      const body = this.alan.body
+      body.updateFromGameObject()
+    }
+    // this.enemyAlan = this.physics.add
+    //   .sprite(3000, 300, 'Alan')
+    //   .setScale(5)
+    //   .setGravity(0, -330)
+    // this.enemyAlan.play('idle', true)
 
     this.anims.create({
       key: 'idle1',
@@ -192,7 +197,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(
       this.player,
       [
-        this.enemyAlan,
+        this.alan,
         this.enemyBonBon,
         this.enemyLips,
         this.abovePlatforms,
@@ -205,7 +210,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.physics.add.collider(
       this.laserGroup,
-      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      [this.alan, this.enemyBonBon, this.enemyLips],
       this.fireEnemy,
       null,
       this
