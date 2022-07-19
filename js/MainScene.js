@@ -1,4 +1,5 @@
 import LaserGroup from '../js/Laser.js'
+import EnemyGroup from './Enemy.js'
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
@@ -128,6 +129,7 @@ export default class MainScene extends Phaser.Scene {
     // this.player.setCollideWorldBounds(true)
 
     this.laserGroup = new LaserGroup(this)
+    this.enemyGroup = new EnemyGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
     this.anims.create({
@@ -217,6 +219,10 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
+  activateEnemy() {
+    this.enemyGroup.activateEnemy()
+  }
+
   hitEnemy(player, enemy) {
     this.physics.pause()
     player.setTint(0xff0000)
@@ -257,6 +263,7 @@ export default class MainScene extends Phaser.Scene {
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
+      this.activateEnemy()
     }
 
     // if the player leaves the screen game over
