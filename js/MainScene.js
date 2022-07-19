@@ -243,12 +243,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    this.clouds1.tilePositionX += 0.5
-    this.rocks1.tilePositionX += 0.5
-    this.clouds2.tilePositionX += 0.5
-    this.rocks2.tilePositionX += 1
-    this.clouds3.tilePositionX += 3
-    this.clouds4.tilePositionX += 4
+    this.clouds1.tilePositionX += 2
+    this.rocks1.tilePositionX += 2
+    this.clouds2.tilePositionX += 2
+    this.rocks2.tilePositionX += 4
+    this.clouds3.tilePositionX += 5
+    this.clouds4.tilePositionX += 6
 
     // this.parallax.start()
 
