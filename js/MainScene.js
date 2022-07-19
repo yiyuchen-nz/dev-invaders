@@ -15,6 +15,8 @@ export default class MainScene extends Phaser.Scene {
     // this.kaboom
     // this.belowPlatforms
     // this.abovePlatforms
+
+    this.switch = true
   }
 
   preload() {
@@ -132,7 +134,7 @@ export default class MainScene extends Phaser.Scene {
 
     for (let i = 0; i < 5; ++i) {
       this.alan = this.alanGroup
-        .create(i * 100, 300, 'Alan')
+        .create(i * 2000, 700, 'Alan')
         .setGravity(0, -330)
         .setVelocityX(-200)
       this.alan.play('idle', true)
@@ -216,21 +218,21 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
-    // this.physics.add.collider(
-    //   this.laserGroup,
-    //   [this.alanGroup, this.enemyBonBon, this.enemyLips],
-    //   this.fireEnemy,
-    //   null,
-    //   this
-    // )
-
     this.physics.add.collider(
       this.laserGroup,
-      [this.abovePlatforms, this.belowPlatforms],
-      this.firePlatform,
+      [this.alanGroup, this.enemyBonBon, this.enemyLips],
+      this.fireEnemy,
       null,
       this
     )
+
+    // this.physics.add.collider(
+    //   this.laserGroup,
+    //   [this.abovePlatforms, this.belowPlatforms],
+    //   this.firePlatform,
+    //   null,
+    //   this
+    // )
     //this.shootingSound = this.add.audioSprite('pewPew')
   }
 
@@ -287,6 +289,10 @@ export default class MainScene extends Phaser.Scene {
     this.scene.start('GameOver')
   }
 
+  printHi() {
+    console.log('hi from function')
+  }
+
   update() {
     this.clouds1.tilePositionX += 2
     this.rocks1.tilePositionX += 2
@@ -298,7 +304,7 @@ export default class MainScene extends Phaser.Scene {
     // this.parallax.start()
 
     if (this.cursors.up.isDown) {
-      this.player.setVelocityY(this.player.body.velocity.y - 20)
+      this.player.setVelocityY(this.player.body.velocity.y - 70)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
@@ -308,6 +314,19 @@ export default class MainScene extends Phaser.Scene {
     if (!this.cameras.main.worldView.contains(this.player.x, this.player.y)) {
       // this.scene.launch overlays scenes
       this.gameOver()
+    }
+
+    // if (phase1) {
+    //   buildPhase1()
+    // } else if (phase2) {
+    //   buildPhase2()
+    // } else if (phase3) {
+    //   buildPhase3()
+    // }
+
+    if (this.switch) {
+      this.switch = false
+      this.printHi()
     }
   }
 }
