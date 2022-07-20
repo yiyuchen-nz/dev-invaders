@@ -110,11 +110,11 @@ export default class MainScene extends Phaser.Scene {
     const maxXGap = 1000
 
     this.numberOfPlatforms = 10
-    let screenHeight = 700
+    let screenHeight = 300 // 700 is screen height
     let yGap = 700
 
     let x = startingObstacleDistance
-    let y = Phaser.Math.Between(0, screenHeight - yGap)
+    let y = Phaser.Math.Between(0, screenHeight)
 
     for (let i = 0; i < this.numberOfPlatforms; ++i) {
       const belowPlatforms = this.belowPlatforms
@@ -137,7 +137,7 @@ export default class MainScene extends Phaser.Scene {
       body2.updateFromGameObject()
 
       x = x + Phaser.Math.Between(minXGap, maxXGap)
-      y = Phaser.Math.Between(0, screenHeight - yGap)
+      y = Phaser.Math.Between(0, screenHeight)
     }
 
     this.cursors = this.input.keyboard.createCursorKeys()
