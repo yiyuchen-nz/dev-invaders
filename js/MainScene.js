@@ -181,11 +181,13 @@ export default class MainScene extends Phaser.Scene {
     // laser v enemy - with explosion
     // laser v platform
 
-    // this.physics.add.overlap(
-    //   this.player,
-    //   this.enemyGroup,
-    //   this.hitEnemy
-    // )
+    this.physics.add.collider(
+      this.player,
+      this.enemyGroup,
+      this.hitEnemy,
+      null,
+      this
+    )
 
     this.physics.add.collider(
       this.player,
@@ -197,7 +199,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.physics.add.collider(
       this.laserGroup,
-      [this.enemyBonBon, this.enemyLips],
+      this.enemyGroup,
       this.fireEnemy,
       null,
       this
@@ -235,13 +237,17 @@ export default class MainScene extends Phaser.Scene {
     this.enemyGroup.activateEnemy()
   }
 
-  hitEnemy(player, enemy) {
+  hitEnemy(player, enemy2) {
+    console.log('hitEnemy', player, enemy2)
+
     this.physics.pause()
+
     player.setTint(0xff0000)
-    enemy.destroy()
+
     this.kaboom(player)
     this.playerExplosion.play()
     this.player.setVisible(false)
+
     this.time.addEvent({
       delay: 1000,
       callback: () => {
@@ -272,7 +278,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   firePlatform(laser, platform) {
-    laser.destroy()
+    laser.setVisible(false)
   }
 
   gameOver() {
