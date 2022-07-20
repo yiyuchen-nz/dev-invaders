@@ -1,9 +1,6 @@
 import LaserGroup from '../js/Laser.js'
-<<<<<<< HEAD
 import EnemyGroup from './Enemy.js'
-=======
 import BossFireGroup from './BossFire.js'
->>>>>>> origin
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
@@ -136,7 +133,6 @@ export default class MainScene extends Phaser.Scene {
     this.player.setScale(0.2)
     // this.player.setCollideWorldBounds(true)
 
-    
     this.cursors = this.input.keyboard.createCursorKeys()
 
     this.laserGroup = new LaserGroup(this)
@@ -258,20 +254,14 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
-<<<<<<< HEAD
   activateEnemy() {
     this.enemyGroup.activateEnemy()
   }
 
-  hitEnemy(player, enemy2) {
-    console.log('hitEnemy', player, enemy2)
-
-=======
   bossBullet() {
     this.bossFireGroup.bossBullet(750, this.boss.y - 90)
   }
   hitEnemy(player, enemy) {
->>>>>>> origin
     this.physics.pause()
 
     player.setTint(0xff0000)
