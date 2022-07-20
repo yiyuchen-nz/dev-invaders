@@ -337,9 +337,12 @@ export default class MainScene extends Phaser.Scene {
   fireEnemy(laser, enemy) {
     enemy.setTint(0xff0000)
     this.kaboom(enemy)
-    enemy.setVisible(false)
+    // enemy.setVisible(false)
     this.enemyExplosion.play()
-    laser.setVisible(false).setActive(false)
+
+    laser.body.reset(-500, 0)
+    enemy.destroy()
+
     // this.resetBullet()
     // this.time.addEvent({
     //   delay: 1000,
