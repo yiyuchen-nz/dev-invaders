@@ -3,6 +3,16 @@ export default class GameOver extends Phaser.Scene {
     super({
       key: 'GameOver',
     })
+
+    // init()
+    // {
+    //   this.CONFIG = this.sys.game.CONFIG
+
+    //   this.DEPTH = {
+    //     floor: 0,
+    //     player: 1,
+    //   }
+    // }
   }
 
   preload() {
@@ -29,6 +39,16 @@ export default class GameOver extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
+
+    this.load.spritesheet('Boss', 'assets/minipixel/Enemies/Boss.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    // // mobile touch controls
+    // this.is_holding = {
+    //   left: false,
+    //   right: false,
+    // }
   }
 
   create() {
@@ -72,6 +92,19 @@ export default class GameOver extends Phaser.Scene {
 
     this.enemyLips.play('idle2', true)
 
+    this.anims.create({
+      key: 'idle3',
+      frames: this.anims.generateFrameNumbers('Boss'),
+      frameRate: 10,
+      repeat: -1,
+    })
+
+    this.enemyBoss = this.physics.add
+      .sprite(1500, 600, 'Boss')
+      .setScale(8)
+      .setGravity(0, -330)
+    this.enemyBoss.play('idle3', true)
+
     this.add.sprite(880, 520, 'continue').setScale(0.3).setInteractive()
     const yes = this.add.sprite(750, 600, 'yes').setScale(0.3).setInteractive()
     const no = this.add.sprite(1020, 600, 'no').setScale(0.3).setInteractive()
@@ -83,11 +116,21 @@ export default class GameOver extends Phaser.Scene {
 
     this.add.sprite(950, 350, 'lessons').setScale(0.2).setInteractive()
 
-    //var mainScene = this.scene.get('MainScene')
     no.on('pointerdown', () => this.scene.start('Title'))
-    // mainScene.scene.restart())
-    //  this.scene.restart('MainScene'))
 
     // restart.on('pointerover', () => restart.setTint(0xff0000a160))
   }
 }
+
+// controls
+
+// createControls()
+// {
+//   let w = 0.45 * this.CONFIG.width
+//   let h = this.CONFIG.height
+
+//   this.zone_left = this.add.zone(0, 0, w, h)
+//   this.zone_left.setOrigin(0, 0)
+//   this.zone_left.setDepth(this.DEPTH.ui)
+//   this.zone_left.setScrollFactor(0)
+// }

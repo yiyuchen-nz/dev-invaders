@@ -96,7 +96,7 @@ export default class Title extends Phaser.Scene {
 
     // start.on('pointerover', () => start.setTint(0xff0000a160))
     var text = this.add
-      .text(900, 750, 'Created by Diana David Liam Yiyu', {
+      .text(950, 750, 'Created by Team PEWPEW, Diana David Liam Yiyu', {
         fontSize: 20,
         color: 'white',
         fontStyle: 'bold',
