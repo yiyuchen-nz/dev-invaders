@@ -26,7 +26,7 @@ export default class EnemyGroup extends Phaser.Physics.Arcade.Group {
       visible: false,
       setScale: { x: 5, y: 5 },
       classType: Enemy,
-      setXY: { x:500 },
+      setXY: { y: 700, x:-500 },
     })
 
     this.scene.anims.create({

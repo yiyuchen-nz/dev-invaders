@@ -206,7 +206,7 @@ export default class MainScene extends Phaser.Scene {
     this.anims.create({
       key: 'explosion',
       frames: this.anims.generateFrameNumbers('kaboom'),
-      frameRate: 5,
+      frameRate: 30,
     })
 
     // player v enemy - with explosion, gameover
@@ -264,12 +264,9 @@ export default class MainScene extends Phaser.Scene {
       .sprite(player.x, player.y, 'kaboom')
       .setScale(10)
       .play('explosion')
-    this.time.addEvent({
-      delay: 500,
-      callback: () => {
-        this.Kaboom.setVisible(false)
-      },
-    })
+      .once('animationcomplete', () => {
+        this.Kaboom.destroy()
+      })
   }
 
   fireBullet() {

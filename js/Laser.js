@@ -24,9 +24,10 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group {
       visible: false,
       setScale: { x: 3, y: 3 },
       classType: Laser,
+      setXY: { y: 700, x:-1000 },
     })
 
-    this.shotDelay = 300
+    this.shotDelay = 600
     this.nextShotTime = 0
   }
 
