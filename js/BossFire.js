@@ -7,7 +7,7 @@ export class BossFire extends Phaser.Physics.Arcade.Sprite {
     this.body.reset(x, y)
     this.setVelocityX(-500)
     // refactor this with only gravity for player
-    this.setGravity(0, 200)
+    this.setGravity(0, -200)
     this.setActive(true)
     this.setVisible(true)
     // this.setRotation(atan2(x - 5, y - 5))

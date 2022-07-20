@@ -8,9 +8,12 @@ export default class MainScene extends Phaser.Scene {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
 
+    this.bossTime = 30000
     this.enemyTime = 13000
-    this.enemyDelay = 2000
+    this.enemyDelay = 800
+    this.phaseTime = 15000
     this.timeGameStart = 0
+    this.switch = true
   }
 
   preload() {
@@ -183,6 +186,10 @@ export default class MainScene extends Phaser.Scene {
       .setScale(8)
       .setGravity(0, -330)
       .setFlipX(true)
+      // .setVisible(false)
+      // .setActive(false)
+    
+    this.boss.body.enable = false
 
     this.anims.create({
       key: 'bossAttack',
@@ -383,6 +390,7 @@ export default class MainScene extends Phaser.Scene {
     if (!(this.timeGameStart)){
       this.timeGameStart = this.time.now
       this.enemyTime = this.enemyTime + this.timeGameStart
+      this.bossTime = this.bossTime + this.timeGameStart
     }
 
     this.clouds1.tilePositionX += 2
@@ -413,10 +421,17 @@ export default class MainScene extends Phaser.Scene {
       this.gameOver()
     }
 
-    // aactivate enemies
-    if (this.time.now > this.enemyTime){
-      this.activateEnemy(1920,Phaser.Math.Between(0,800))
-      this.enemyTime = this.time.now + this.enemyDelay
-    }
+      // aactivate enemies
+      if (this.time.now > this.enemyTime && this.time.now < this.enemyTime + this.phaseTime){
+        this.activateEnemy(1920,Phaser.Math.Between(0,800))
+        this.enemyTime = this.time.now + this.enemyDelay
+      }else {
+        if (this.switch && this.time.now > this.bossTime){
+          this.switch = false
+          this.boss.body.enable = true
+        }
+      }
+
+
   }
 }
