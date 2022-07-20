@@ -8,8 +8,8 @@ export default class MainScene extends Phaser.Scene {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
 
-    this.enemyTime = 3000
-    this.enemyDelay = 1000
+    this.enemyTime = 13000
+    this.enemyDelay = 2000
     this.timeGameStart = 0
   }
 
@@ -87,29 +87,39 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
+    this.cursors = this.input.keyboard.createCursorKeys()
+
+    this.player = this.physics.add.sprite(100, 0, 'dude')
+    this.player.setScale(0.2)
+    
+    this.laserGroup = new LaserGroup(this)
+    this.enemyGroup = new EnemyGroup(this)
+
     this.belowPlatforms = this.physics.add.group()
     this.abovePlatforms = this.physics.add.group()
+
     const startingObstacleDistance = 2000
     const minXGap = 500
     const maxXGap = 1000
 
+    this.numberOfPlatforms = 10
     let screenHeight = 700
-    let yGap = 800
+    let yGap = 700
 
     let x = startingObstacleDistance
     let y = Phaser.Math.Between(0, screenHeight - yGap)
 
-    for (let i = 0; i < 20; ++i) {
+    for (let i = 0; i < this.numberOfPlatforms; ++i) {
       const belowPlatforms = this.belowPlatforms
         .create(x, y + yGap, 'platform2')
         .setGravity(0, -330)
-        .setVelocityX(-200)
+        .setVelocityX(-600)
       belowPlatforms.scale = 2
 
       const abovePlatforms = this.abovePlatforms
         .create(x, y, 'platform')
         .setGravity(0, -330)
-        .setVelocityX(-200)
+        .setVelocityX(-600)
 
       abovePlatforms.scale = 2
 
@@ -123,15 +133,7 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-    this.player = this.physics.add.sprite(100, 0, 'dude')
-    this.player.setScale(0.2)
-    // this.player.setCollideWorldBounds(true)
 
-    
-    this.cursors = this.input.keyboard.createCursorKeys()
-
-    this.laserGroup = new LaserGroup(this)
-    this.enemyGroup = new EnemyGroup(this)
 
     // this.anims.create({
     //   key: 'idle1',
@@ -327,7 +329,6 @@ export default class MainScene extends Phaser.Scene {
     if (!(this.timeGameStart)){
       this.timeGameStart = this.time.now
       this.enemyTime = this.enemyTime + this.timeGameStart
-      console.log(this.enemyTime, this.timeGameStart)
     }
 
     this.clouds1.tilePositionX += 2
@@ -357,7 +358,7 @@ export default class MainScene extends Phaser.Scene {
       this.gameOver()
     }
 
-    if (this.time.now > this.enemyTime){
+    if (this.timeGameStart && this.time.now > this.enemyTime){
       this.activateEnemy(1920,Phaser.Math.Between(0,800))
       this.enemyTime = this.time.now + this.enemyDelay
     }
