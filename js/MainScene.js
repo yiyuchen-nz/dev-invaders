@@ -61,9 +61,11 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
+    //background music
     this.music = this.sound.add('bg-music', { volume: 0.8, loop: true })
     this.music.play()
 
+    //our fantastic moving background
     const width = this.scale.width
     const height = this.scale.height
 
@@ -89,12 +91,14 @@ export default class MainScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
+    //our main character---the 'dude' and its weapon
     this.player = this.physics.add.sprite(100, 0, 'dude')
     this.player.setScale(0.2)
     
     this.laserGroup = new LaserGroup(this)
     this.enemyGroup = new EnemyGroup(this)
 
+    //annoying but amazing moving obstacles
     this.belowPlatforms = this.physics.add.group()
     this.abovePlatforms = this.physics.add.group()
 
@@ -133,7 +137,7 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-
+    this.cursors = this.input.keyboard.createCursorKeys()
 
     // this.anims.create({
     //   key: 'idle1',
@@ -171,21 +175,26 @@ export default class MainScene extends Phaser.Scene {
     //   yoyo: true,
     // })
 
-    // this.boss = this.physics.add
-    //   .sprite(12000, 600, 'Boss')
-    //   .setScale(8)
-    //   .setGravity(0, -330)
-    //   .setFlipX(true)
+    // the boss and its weapon
+    this.bossFireGroup = new BossFireGroup(this)
 
-    // this.anims.create({
-    //   key: 'bossAttack',
-    //   frames: this.anims.generateFrameNumbers('Boss'),
-    //   frameRate: 10,
-    //   repeat: -1,
-    // })
-    // this.boss.play('bossAttack', true)
+    this.boss = this.physics.add
+      .sprite(1200, 1000, 'Boss')
+      .setScale(8)
+      .setGravity(0, -330)
+      .setFlipX(true)
 
-    // this.bossFireGroup = new BossFireGroup(this)
+    this.anims.create({
+      key: 'bossAttack',
+      frames: this.anims.generateFrameNumbers('Boss'),
+      frameRate: 10,
+      repeat: -1,
+    })
+    this.boss.play('bossAttack', true)
+    this.boss.body.setCollideWorldBounds(true)
+    this.boss.body.setVelocity(0, 0)
+    this.boss.body.setBounce(0, 0.6)
+
     this.anims.create({
       key: 'explosion',
       frames: this.anims.generateFrameNumbers('kaboom'),
@@ -195,7 +204,7 @@ export default class MainScene extends Phaser.Scene {
     // player v enemy - with explosion, gameover
     this.physics.add.collider(
       this.player,
-      this.enemyGroup,
+      [this.enemyGroup, this.bossFireGroup],
       this.hitEnemy,
       null,
       this
@@ -219,18 +228,29 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
-    // laser v platform
+    // laser v boss
+    this.physics.add.collider(
+      this.laserGroup,
+      this.boss,
+      this.fireBoss,
+      null,
+      this
+      )
+      
+      // laser v platform
     this.physics.add.overlap(
       this.laserGroup,
       [this.abovePlatforms, this.belowPlatforms],
       this.firePlatform
     )
 
+    //sound effect
     this.playerExplosion = this.sound.add('player-explosion')
     this.laserSound = this.sound.add('laserSound')
     this.enemyExplosion = this.sound.add('enemy-explosion')
   }
 
+  //functions that need to be called
   kaboom(player) {
     this.Kaboom = this.add
       .sprite(player.x, player.y, 'kaboom')
@@ -255,6 +275,27 @@ export default class MainScene extends Phaser.Scene {
   bossBullet() {
     this.bossFireGroup.bossBullet(750, this.boss.y - 90)
   }
+
+  resetBullet() {
+    this.laserGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
+  }
+
+  resetFire() {
+    this.bossFireGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
+  }
+
   hitEnemy(player, enemy) {
     this.physics.pause()
 
@@ -291,13 +332,26 @@ export default class MainScene extends Phaser.Scene {
     enemy.setVisible(false)
     this.enemyExplosion.play()
     laser.setVisible(false).setActive(false)
-    laser.body.reset()
-    console.log('laser',laser);
     // this.resetBullet()
+    // this.time.addEvent({
+    //   delay: 1000,
+    //   callback: () => {
+    //     this.gameOver()
+    //   },
+    // })
   }
 
   firePlatform(laser, platform) {
     laser.setVisible(false)
+  }
+
+  fireBoss( boss,laser) {
+    this.kaboom(boss)
+    this.playerExplosion.play()
+    // boss.setVisible(false)
+    this.time.addEvent()
+    boss.destroy()
+    console.log('boss', boss)
   }
 
   gameOver() {
@@ -341,7 +395,8 @@ export default class MainScene extends Phaser.Scene {
     // this.parallax.start()
 
     this.resetBulletOutOfBounds()
-    // this.bossBullet()
+    this.bossBullet()
+    this.resetFire()
 
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
