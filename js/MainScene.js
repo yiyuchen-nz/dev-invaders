@@ -8,7 +8,7 @@ export default class MainScene extends Phaser.Scene {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
 
-    this.bossTime = 30000
+    this.bossTime = 25000
     this.enemyTime = 13000
     this.enemyDelay = 800
     this.phaseTime = 15000
@@ -431,7 +431,5 @@ export default class MainScene extends Phaser.Scene {
           this.boss.body.enable = true
         }
       }
-
-
   }
 }
