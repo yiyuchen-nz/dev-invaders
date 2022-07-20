@@ -244,7 +244,7 @@ export default class MainScene extends Phaser.Scene {
       [this.abovePlatforms, this.belowPlatforms],
       this.firePlatform
     )
-
+    f
     //sound effect
     this.playerExplosion = this.sound.add('player-explosion')
     this.laserSound = this.sound.add('laserSound')
