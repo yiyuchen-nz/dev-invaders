@@ -1,29 +1,16 @@
-export default class GameOver extends Phaser.Scene {
+export default class Victory extends Phaser.Scene {
   constructor() {
     super({
-      key: 'GameOver',
+      key: 'Victory',
     })
-
-    // init()
-    // {
-    //   this.CONFIG = this.sys.game.CONFIG
-
-    //   this.DEPTH = {
-    //     floor: 0,
-    //     player: 1,
-    //   }
-    // }
   }
 
   preload() {
-    this.load.image('restart-game', '../assets/minipixel/restart.png')
-    this.load.image('game-over', '../assets/minipixel/UI-objects/GAME_OVER.png')
-    this.load.image('defeat', '../assets/minipixel/DEFEAT.png')
-    this.load.image('lessons', '../assets/minipixel/LESSONS.png')
-
-    this.load.image('continue', '../assets/minipixel/CONTINUE.png')
-    this.load.image('yes', '../assets/minipixel/YES.png')
-    this.load.image('no', '../assets/minipixel/NO.png')
+    this.load.image('victory', '../assets/minipixel/VICTORY.png')
+    this.load.image('unlockText', '../assets/minipixel/UNLOCKTEXT.png')
+    this.load.image('buyNow', '../assets/minipixel/BUYNOW.png')
+    this.load.image('sky', 'assets/parallax/sky.png')
+    this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
 
     this.load.spritesheet('Alan', '../assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -44,14 +31,14 @@ export default class GameOver extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
-    // // mobile touch controls
-    // this.is_holding = {
-    //   left: false,
-    //   right: false,
-    // }
   }
 
   create() {
+    const width = this.scale.width
+    const height = this.scale.height
+
+    this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
+    // this.add.image(width * 0.5, height * 0.5, 'background')
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
@@ -73,7 +60,7 @@ export default class GameOver extends Phaser.Scene {
     })
 
     this.enemyBonBon = this.physics.add
-      .sprite(200, 400, 'Bonbon')
+      .sprite(200, 350, 'Bonbon')
       .setScale(5)
       .setGravity(0, -330)
     this.enemyBonBon.play('idle1', true)
@@ -86,38 +73,28 @@ export default class GameOver extends Phaser.Scene {
     })
 
     this.enemyLips = this.physics.add
-      .sprite(500, 600, 'Lips')
+      .sprite(1700, 600, 'Lips')
       .setScale(5)
       .setGravity(0, -330)
 
     this.enemyLips.play('idle2', true)
 
-    this.anims.create({
-      key: 'idle3',
-      frames: this.anims.generateFrameNumbers('Boss'),
-      frameRate: 10,
-      repeat: -1,
-    })
+    // this.add.sprite(880, 520, 'continue').setScale(0.3).setInteractive()
+    // this.add.sprite(950, 700, 'skux').setScale(0.15).setInteractive()
+    this.add.sprite(950, 200, 'victory').setScale(1.5).setInteractive()
 
-    this.enemyBoss = this.physics.add
-      .sprite(1500, 600, 'Boss')
-      .setScale(8)
-      .setGravity(0, -330)
-    this.enemyBoss.play('idle3', true)
+    // this.add.sprite(950, 350, 'victoryText').setScale(0.15).setInteractive()
+    this.add.sprite(950, 400, 'unlockText').setScale(0.15).setInteractive()
 
-    this.add.sprite(880, 520, 'continue').setScale(0.3).setInteractive()
-    const yes = this.add.sprite(750, 600, 'yes').setScale(0.3).setInteractive()
-    const no = this.add.sprite(1020, 600, 'no').setScale(0.3).setInteractive()
+    this.player = this.physics.add.sprite(0, 500, 'dude')
+    this.player.setScale(0.2).setVelocityX(300).setGravity(0, -330)
 
-    const defeat = this.add
-      .sprite(950, 200, 'defeat')
-      .setScale(1.5)
+    const buyNow = this.add
+      .sprite(950, 600, 'buyNow')
+      .setScale(0.3)
       .setInteractive()
 
-    this.add.sprite(950, 350, 'lessons').setScale(0.2).setInteractive()
-
-    no.on('pointerdown', () => this.scene.start('Title'))
-
+    buyNow.on('pointerdown', () => this.scene.start('Title'))
     // restart.on('pointerover', () => restart.setTint(0xff0000a160))
   }
 }

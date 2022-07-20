@@ -7,16 +7,13 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    // this.cursors
-    // this.player
-    //this.setPlayerVelocity = -50
-    // this.enemyAlan
-    // this.enemyBonBon
-    // this.enemyLips
-    // this.laserGroup
-    // this.kaboom
-    // this.belowPlatforms
-    // this.abovePlatforms
+
+    this.bossTime = 25000
+    this.enemyTime = 13000
+    this.enemyDelay = 800
+    this.phaseTime = 15000
+    this.timeGameStart = 0
+    this.switch = true
   }
 
   preload() {
@@ -40,14 +37,14 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
-    this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Lips', 'assets/minipixel/Enemies/Lips.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
+    // this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 16,
+    // })
+    // this.load.spritesheet('Lips', 'assets/minipixel/Enemies/Lips.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 16,
+    // })
 
     this.load.spritesheet('Boss', 'assets/minipixel/Enemies/Boss.png', {
       frameWidth: 90,
@@ -67,9 +64,11 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
+    //background music
     this.music = this.sound.add('bg-music', { volume: 0.8, loop: true })
     this.music.play()
 
+    //our fantastic moving background
     const width = this.scale.width
     const height = this.scale.height
 
@@ -93,29 +92,41 @@ export default class MainScene extends Phaser.Scene {
       .tileSprite(0, 0, width, height, 'clouds4')
       .setOrigin(0, 0)
 
+    this.cursors = this.input.keyboard.createCursorKeys()
+
+    //our main character---the 'dude' and its weapon
+    this.player = this.physics.add.sprite(100, 0, 'dude')
+    this.player.setScale(0.2)
+    
+    this.laserGroup = new LaserGroup(this)
+    this.enemyGroup = new EnemyGroup(this)
+
+    //annoying but amazing moving obstacles
     this.belowPlatforms = this.physics.add.group()
     this.abovePlatforms = this.physics.add.group()
+
     const startingObstacleDistance = 2000
     const minXGap = 500
     const maxXGap = 1000
 
+    this.numberOfPlatforms = 10
     let screenHeight = 700
-    let yGap = 800
+    let yGap = 700
 
     let x = startingObstacleDistance
     let y = Phaser.Math.Between(0, screenHeight - yGap)
 
-    for (let i = 0; i < 20; ++i) {
+    for (let i = 0; i < this.numberOfPlatforms; ++i) {
       const belowPlatforms = this.belowPlatforms
         .create(x, y + yGap, 'platform2')
         .setGravity(0, -330)
-        .setVelocityX(-200)
+        .setVelocityX(-600)
       belowPlatforms.scale = 2
 
       const abovePlatforms = this.abovePlatforms
         .create(x, y, 'platform')
         .setGravity(0, -330)
-        .setVelocityX(-200)
+        .setVelocityX(-600)
 
       abovePlatforms.scale = 2
 
@@ -129,56 +140,56 @@ export default class MainScene extends Phaser.Scene {
       y = Phaser.Math.Between(0, screenHeight - yGap)
     }
 
-    this.player = this.physics.add.sprite(100, 0, 'dude')
-    this.player.setScale(0.2)
-    // this.player.setCollideWorldBounds(true)
-
     this.cursors = this.input.keyboard.createCursorKeys()
 
-    this.laserGroup = new LaserGroup(this)
-    this.enemyGroup = new EnemyGroup(this)
+    // this.anims.create({
+    //   key: 'idle1',
+    //   frames: this.anims.generateFrameNumbers('Bonbon'),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // })
 
-    this.anims.create({
-      key: 'idle1',
-      frames: this.anims.generateFrameNumbers('Bonbon'),
-      frameRate: 10,
-      repeat: -1,
-    })
+    // this.enemyBonBon = this.physics.add
+    //   .sprite(3000, 500, 'Bonbon')
+    //   .setScale(5)
+    //   .setGravity(0, -330)
 
-    this.enemyBonBon = this.physics.add
-      .sprite(3000, 500, 'Bonbon')
-      .setScale(5)
-      .setGravity(0, -330)
+    // this.enemyBonBon.play('idle1', true)
 
-    this.enemyBonBon.play('idle1', true)
+    // this.anims.create({
+    //   key: 'idle2',
+    //   frames: this.anims.generateFrameNumbers('Lips'),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // })
 
-    this.anims.create({
-      key: 'idle2',
-      frames: this.anims.generateFrameNumbers('Lips'),
-      frameRate: 10,
-      repeat: -1,
-    })
+    // this.enemyLips = this.physics.add
+    //   .sprite(5000, 600, 'Lips')
+    //   .setScale(5)
+    //   .setGravity(0, -330)
 
-    this.enemyLips = this.physics.add
-      .sprite(5000, 600, 'Lips')
-      .setScale(5)
-      .setGravity(0, -330)
+    // this.enemyLips.play('idle2', true)
 
-    this.enemyLips.play('idle2', true)
+    // this.tweens.add({
+    //   targets: [this.enemyBonBon, this.enemyLips],
+    //   x: 0,
+    //   duration: 8800,
+    //   ease: 'Linear',
+    //   yoyo: true,
+    // })
 
-    this.tweens.add({
-      targets: [this.enemyBonBon, this.enemyLips],
-      x: 0,
-      duration: 8800,
-      ease: 'Linear',
-      yoyo: true,
-    })
+    // the boss and its weapon
+    this.bossFireGroup = new BossFireGroup(this)
 
     this.boss = this.physics.add
-      .sprite(1200, 600, 'Boss')
+      .sprite(1200, 1000, 'Boss')
       .setScale(8)
       .setGravity(0, -330)
       .setFlipX(true)
+      // .setVisible(false)
+      // .setActive(false)
+    
+    this.boss.body.enable = false
 
     this.anims.create({
       key: 'bossAttack',
@@ -187,29 +198,26 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     })
     this.boss.play('bossAttack', true)
+    this.boss.body.setCollideWorldBounds(true)
+    this.boss.body.setVelocity(0, 0)
+    this.boss.body.setBounce(0, 0.6)
 
-    this.bossFireGroup = new BossFireGroup(this)
     this.anims.create({
       key: 'explosion',
       frames: this.anims.generateFrameNumbers('kaboom'),
       frameRate: 5,
     })
 
-    // this.parallax = new ParallaxScene(this)
-
     // player v enemy - with explosion, gameover
-    // player v platform - with explosion, gameover
-    // laser v enemy - with explosion
-    // laser v platform
-
     this.physics.add.collider(
       this.player,
-      this.enemyGroup,
+      [this.enemyGroup, this.bossFireGroup],
       this.hitEnemy,
       null,
       this
-    )
-
+      )
+      
+      // player v platform - with explosion, gameover
     this.physics.add.collider(
       this.player,
       [this.abovePlatforms, this.belowPlatforms],
@@ -218,6 +226,7 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
+    // laser v enemy - with explosion
     this.physics.add.collider(
       this.laserGroup,
       this.enemyGroup,
@@ -226,17 +235,29 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
+    // laser v boss
+    this.physics.add.collider(
+      this.laserGroup,
+      this.boss,
+      this.fireBoss,
+      null,
+      this
+      )
+      
+      // laser v platform
     this.physics.add.overlap(
       this.laserGroup,
       [this.abovePlatforms, this.belowPlatforms],
       this.firePlatform
     )
 
+    //sound effect
     this.playerExplosion = this.sound.add('player-explosion')
     this.laserSound = this.sound.add('laserSound')
     this.enemyExplosion = this.sound.add('enemy-explosion')
   }
 
+  //functions that need to be called
   kaboom(player) {
     this.Kaboom = this.add
       .sprite(player.x, player.y, 'kaboom')
@@ -254,13 +275,34 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
-  activateEnemy() {
-    this.enemyGroup.activateEnemy()
+  activateEnemy(x,y) {
+    this.enemyGroup.activateEnemy(x,y)
   }
 
   bossBullet() {
     this.bossFireGroup.bossBullet(750, this.boss.y - 90)
   }
+
+  resetBullet() {
+    this.laserGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
+  }
+
+  resetFire() {
+    this.bossFireGroup.children.entries.forEach((laser) => {
+      if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+      }
+    })
+  }
+
   hitEnemy(player, enemy) {
     this.physics.pause()
 
@@ -291,16 +333,32 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
-  fireEnemy(enemy, laser) {
+  fireEnemy(laser,enemy) {
     enemy.setTint(0xff0000)
     this.kaboom(enemy)
-    enemy.destroy()
+    enemy.setVisible(false)
     this.enemyExplosion.play()
-    laser.setVisible(false)
+    laser.setVisible(false).setActive(false)
+    // this.resetBullet()
+    // this.time.addEvent({
+    //   delay: 1000,
+    //   callback: () => {
+    //     this.gameOver()
+    //   },
+    // })
   }
 
   firePlatform(laser, platform) {
     laser.setVisible(false)
+  }
+
+  fireBoss( boss,laser) {
+    this.kaboom(boss)
+    this.playerExplosion.play()
+    // boss.setVisible(false)
+    this.time.addEvent()
+    boss.destroy()
+    console.log('boss', boss)
   }
 
   gameOver() {
@@ -308,7 +366,15 @@ export default class MainScene extends Phaser.Scene {
     this.music.pause()
   }
 
-  resetBullet() {
+  resetBullet(){
+    this.laserGroup.children.entries.forEach((laser) => {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+    })
+  }
+
+  resetBulletOutOfBounds() {
     this.laserGroup.children.entries.forEach((laser) => {
       if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
         laser.body.reset(laser.x, laser.y)
@@ -318,7 +384,15 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
+
   update() {
+
+    if (!(this.timeGameStart)){
+      this.timeGameStart = this.time.now
+      this.enemyTime = this.enemyTime + this.timeGameStart
+      this.bossTime = this.bossTime + this.timeGameStart
+    }
+
     this.clouds1.tilePositionX += 2
     this.rocks1.tilePositionX += 2
     this.clouds2.tilePositionX += 2
@@ -328,15 +402,15 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax.start()
 
-    this.resetBullet()
+    this.resetBulletOutOfBounds()
     this.bossBullet()
+    this.resetFire()
 
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
-      this.activateEnemy()
       this.laserSound.play()
     }
 
@@ -346,5 +420,16 @@ export default class MainScene extends Phaser.Scene {
       this.playerExplosion.play()
       this.gameOver()
     }
+
+      // aactivate enemies
+      if (this.time.now > this.enemyTime && this.time.now < this.enemyTime + this.phaseTime){
+        this.activateEnemy(1920,Phaser.Math.Between(0,800))
+        this.enemyTime = this.time.now + this.enemyDelay
+      }else {
+        if (this.switch && this.time.now > this.bossTime){
+          this.switch = false
+          this.boss.body.enable = true
+        }
+      }
   }
 }
