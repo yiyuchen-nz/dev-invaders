@@ -7,11 +7,10 @@ export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    this.enemyTime = 1000
-    
-    this.enemyDelay = 1000
 
-    console.log(this);
+    this.enemyTime = 3000
+    this.enemyDelay = 1000
+    this.timeGameStart = 0
   }
 
   preload() {
@@ -324,6 +323,13 @@ export default class MainScene extends Phaser.Scene {
 
 
   update() {
+
+    if (!(this.timeGameStart)){
+      this.timeGameStart = this.time.now
+      this.enemyTime = this.enemyTime + this.timeGameStart
+      console.log(this.enemyTime, this.timeGameStart)
+    }
+
     this.clouds1.tilePositionX += 2
     this.rocks1.tilePositionX += 2
     this.clouds2.tilePositionX += 2
