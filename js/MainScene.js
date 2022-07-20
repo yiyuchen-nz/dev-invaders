@@ -1,25 +1,17 @@
 import LaserGroup from '../js/Laser.js'
-<<<<<<< HEAD
 import EnemyGroup from './Enemy.js'
-=======
 import BossFireGroup from './BossFire.js'
->>>>>>> origin
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
-    // this.cursors
-    // this.player
-    //this.setPlayerVelocity = -50
-    // this.enemyAlan
-    // this.enemyBonBon
-    // this.enemyLips
-    // this.laserGroup
-    // this.kaboom
-    // this.belowPlatforms
-    // this.abovePlatforms
+    this.enemyTime = 1000
+    
+    this.enemyDelay = 1000
+
+    console.log(this);
   }
 
   preload() {
@@ -43,14 +35,14 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     })
-    this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
-    this.load.spritesheet('Lips', 'assets/minipixel/Enemies/Lips.png', {
-      frameWidth: 16,
-      frameHeight: 16,
-    })
+    // this.load.spritesheet('Bonbon', 'assets/minipixel/Enemies/Bon_Bon.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 16,
+    // })
+    // this.load.spritesheet('Lips', 'assets/minipixel/Enemies/Lips.png', {
+    //   frameWidth: 16,
+    //   frameHeight: 16,
+    // })
 
     this.load.spritesheet('Boss', 'assets/minipixel/Enemies/Boss.png', {
       frameWidth: 90,
@@ -142,78 +134,73 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup = new LaserGroup(this)
     this.enemyGroup = new EnemyGroup(this)
 
-    this.anims.create({
-      key: 'idle1',
-      frames: this.anims.generateFrameNumbers('Bonbon'),
-      frameRate: 10,
-      repeat: -1,
-    })
+    // this.anims.create({
+    //   key: 'idle1',
+    //   frames: this.anims.generateFrameNumbers('Bonbon'),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // })
 
-    this.enemyBonBon = this.physics.add
-      .sprite(3000, 500, 'Bonbon')
-      .setScale(5)
-      .setGravity(0, -330)
+    // this.enemyBonBon = this.physics.add
+    //   .sprite(3000, 500, 'Bonbon')
+    //   .setScale(5)
+    //   .setGravity(0, -330)
 
-    this.enemyBonBon.play('idle1', true)
+    // this.enemyBonBon.play('idle1', true)
 
-    this.anims.create({
-      key: 'idle2',
-      frames: this.anims.generateFrameNumbers('Lips'),
-      frameRate: 10,
-      repeat: -1,
-    })
+    // this.anims.create({
+    //   key: 'idle2',
+    //   frames: this.anims.generateFrameNumbers('Lips'),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // })
 
-    this.enemyLips = this.physics.add
-      .sprite(5000, 600, 'Lips')
-      .setScale(5)
-      .setGravity(0, -330)
+    // this.enemyLips = this.physics.add
+    //   .sprite(5000, 600, 'Lips')
+    //   .setScale(5)
+    //   .setGravity(0, -330)
 
-    this.enemyLips.play('idle2', true)
+    // this.enemyLips.play('idle2', true)
 
-    this.tweens.add({
-      targets: [this.enemyBonBon, this.enemyLips],
-      x: 0,
-      duration: 8800,
-      ease: 'Linear',
-      yoyo: true,
-    })
+    // this.tweens.add({
+    //   targets: [this.enemyBonBon, this.enemyLips],
+    //   x: 0,
+    //   duration: 8800,
+    //   ease: 'Linear',
+    //   yoyo: true,
+    // })
 
-    this.boss = this.physics.add
-      .sprite(1200, 600, 'Boss')
-      .setScale(8)
-      .setGravity(0, -330)
-      .setFlipX(true)
+    // this.boss = this.physics.add
+    //   .sprite(12000, 600, 'Boss')
+    //   .setScale(8)
+    //   .setGravity(0, -330)
+    //   .setFlipX(true)
 
-    this.anims.create({
-      key: 'bossAttack',
-      frames: this.anims.generateFrameNumbers('Boss'),
-      frameRate: 10,
-      repeat: -1,
-    })
-    this.boss.play('bossAttack', true)
+    // this.anims.create({
+    //   key: 'bossAttack',
+    //   frames: this.anims.generateFrameNumbers('Boss'),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // })
+    // this.boss.play('bossAttack', true)
 
-    this.bossFireGroup = new BossFireGroup(this)
+    // this.bossFireGroup = new BossFireGroup(this)
     this.anims.create({
       key: 'explosion',
       frames: this.anims.generateFrameNumbers('kaboom'),
       frameRate: 5,
     })
 
-    // this.parallax = new ParallaxScene(this)
-
     // player v enemy - with explosion, gameover
-    // player v platform - with explosion, gameover
-    // laser v enemy - with explosion
-    // laser v platform
-
     this.physics.add.collider(
       this.player,
       this.enemyGroup,
       this.hitEnemy,
       null,
       this
-    )
-
+      )
+      
+      // player v platform - with explosion, gameover
     this.physics.add.collider(
       this.player,
       [this.abovePlatforms, this.belowPlatforms],
@@ -222,6 +209,7 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
+    // laser v enemy - with explosion
     this.physics.add.collider(
       this.laserGroup,
       this.enemyGroup,
@@ -230,6 +218,7 @@ export default class MainScene extends Phaser.Scene {
       this
     )
 
+    // laser v platform
     this.physics.add.overlap(
       this.laserGroup,
       [this.abovePlatforms, this.belowPlatforms],
@@ -258,20 +247,14 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
-<<<<<<< HEAD
-  activateEnemy() {
-    this.enemyGroup.activateEnemy()
+  activateEnemy(x,y) {
+    this.enemyGroup.activateEnemy(x,y)
   }
 
-  hitEnemy(player, enemy2) {
-    console.log('hitEnemy', player, enemy2)
-
-=======
   bossBullet() {
     this.bossFireGroup.bossBullet(750, this.boss.y - 90)
   }
   hitEnemy(player, enemy) {
->>>>>>> origin
     this.physics.pause()
 
     player.setTint(0xff0000)
@@ -301,12 +284,15 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
-  fireEnemy(enemy, laser) {
+  fireEnemy(laser,enemy) {
     enemy.setTint(0xff0000)
     this.kaboom(enemy)
-    enemy.destroy()
+    enemy.setVisible(false)
     this.enemyExplosion.play()
-    laser.setVisible(false)
+    laser.setVisible(false).setActive(false)
+    laser.body.reset()
+    console.log('laser',laser);
+    // this.resetBullet()
   }
 
   firePlatform(laser, platform) {
@@ -318,7 +304,15 @@ export default class MainScene extends Phaser.Scene {
     this.music.pause()
   }
 
-  resetBullet() {
+  resetBullet(){
+    this.laserGroup.children.entries.forEach((laser) => {
+        laser.body.reset(laser.x, laser.y)
+        laser.setActive(false)
+        laser.setVisible(false)
+    })
+  }
+
+  resetBulletOutOfBounds() {
     this.laserGroup.children.entries.forEach((laser) => {
       if (!this.cameras.main.worldView.contains(laser.x, laser.y)) {
         laser.body.reset(laser.x, laser.y)
@@ -327,6 +321,7 @@ export default class MainScene extends Phaser.Scene {
       }
     })
   }
+
 
   update() {
     this.clouds1.tilePositionX += 2
@@ -338,15 +333,14 @@ export default class MainScene extends Phaser.Scene {
 
     // this.parallax.start()
 
-    this.resetBullet()
-    this.bossBullet()
+    this.resetBulletOutOfBounds()
+    // this.bossBullet()
 
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
-      this.activateEnemy()
       this.laserSound.play()
     }
 
@@ -355,6 +349,11 @@ export default class MainScene extends Phaser.Scene {
       // this.scene.launch overlays scenes
       this.playerExplosion.play()
       this.gameOver()
+    }
+
+    if (this.time.now > this.enemyTime){
+      this.activateEnemy(1920,Phaser.Math.Between(0,800))
+      this.enemyTime = this.time.now + this.enemyDelay
     }
   }
 }
