@@ -130,6 +130,7 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup = new LaserGroup(this)
 
     this.cursors = this.input.keyboard.createCursorKeys()
+
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('Alan'),
