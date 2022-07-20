@@ -8,7 +8,7 @@ export default class MainScene extends Phaser.Scene {
     // super is used to access and call functions on the parent's object. When super is called, it calls the parent class's constructor. In the config.
     super('MainScene')
 
-    this.bossTime = 25000
+    this.bossTime = 38000
     this.enemyTime = 13000
     this.enemyDelay = 800
     this.phaseTime = 15000
@@ -97,7 +97,7 @@ export default class MainScene extends Phaser.Scene {
     //our main character---the 'dude' and its weapon
     this.player = this.physics.add.sprite(100, 0, 'dude')
     this.player.setScale(0.2)
-    
+
     this.laserGroup = new LaserGroup(this)
     this.enemyGroup = new EnemyGroup(this)
 
@@ -186,9 +186,10 @@ export default class MainScene extends Phaser.Scene {
       .setScale(8)
       .setGravity(0, -330)
       .setFlipX(true)
-      // .setVisible(false)
-      // .setActive(false)
-    
+
+    // .setVisible(false)
+    // .setActive(false)
+
     this.boss.body.enable = false
 
     this.anims.create({
@@ -215,9 +216,9 @@ export default class MainScene extends Phaser.Scene {
       this.hitEnemy,
       null,
       this
-      )
-      
-      // player v platform - with explosion, gameover
+    )
+
+    // player v platform - with explosion, gameover
     this.physics.add.collider(
       this.player,
       [this.abovePlatforms, this.belowPlatforms],
@@ -242,9 +243,9 @@ export default class MainScene extends Phaser.Scene {
       this.fireBoss,
       null,
       this
-      )
-      
-      // laser v platform
+    )
+
+    // laser v platform
     this.physics.add.overlap(
       this.laserGroup,
       [this.abovePlatforms, this.belowPlatforms],
@@ -275,8 +276,8 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
-  activateEnemy(x,y) {
-    this.enemyGroup.activateEnemy(x,y)
+  activateEnemy(x, y) {
+    this.enemyGroup.activateEnemy(x, y)
   }
 
   bossBullet() {
@@ -333,7 +334,7 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
-  fireEnemy(laser,enemy) {
+  fireEnemy(laser, enemy) {
     enemy.setTint(0xff0000)
     this.kaboom(enemy)
     enemy.setVisible(false)
@@ -352,25 +353,30 @@ export default class MainScene extends Phaser.Scene {
     laser.setVisible(false)
   }
 
-  fireBoss( boss,laser) {
+  fireBoss(boss, laser) {
     this.kaboom(boss)
     this.playerExplosion.play()
     // boss.setVisible(false)
     this.time.addEvent()
     boss.destroy()
-    console.log('boss', boss)
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.scene.start('Victory')
+      },
+    })
   }
 
   gameOver() {
     this.scene.start('GameOver')
-    this.music.pause()
+    // this.music.pause()
   }
 
-  resetBullet(){
+  resetBullet() {
     this.laserGroup.children.entries.forEach((laser) => {
-        laser.body.reset(laser.x, laser.y)
-        laser.setActive(false)
-        laser.setVisible(false)
+      laser.body.reset(laser.x, laser.y)
+      laser.setActive(false)
+      laser.setVisible(false)
     })
   }
 
@@ -384,10 +390,8 @@ export default class MainScene extends Phaser.Scene {
     })
   }
 
-
   update() {
-
-    if (!(this.timeGameStart)){
+    if (!this.timeGameStart) {
       this.timeGameStart = this.time.now
       this.enemyTime = this.enemyTime + this.timeGameStart
       this.bossTime = this.bossTime + this.timeGameStart
@@ -421,15 +425,18 @@ export default class MainScene extends Phaser.Scene {
       this.gameOver()
     }
 
-      // aactivate enemies
-      if (this.time.now > this.enemyTime && this.time.now < this.enemyTime + this.phaseTime){
-        this.activateEnemy(1920,Phaser.Math.Between(0,800))
-        this.enemyTime = this.time.now + this.enemyDelay
-      }else {
-        if (this.switch && this.time.now > this.bossTime){
-          this.switch = false
-          this.boss.body.enable = true
-        }
+    // aactivate enemies
+    if (
+      this.time.now > this.enemyTime &&
+      this.time.now < this.enemyTime + this.phaseTime
+    ) {
+      this.activateEnemy(1920, Phaser.Math.Between(0, 800))
+      this.enemyTime = this.time.now + this.enemyDelay
+    } else {
+      if (this.switch && this.time.now > this.bossTime) {
+        this.switch = false
+        this.boss.body.enable = true
       }
+    }
   }
 }

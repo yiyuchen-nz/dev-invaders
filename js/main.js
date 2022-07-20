@@ -2,6 +2,7 @@ import ParallaxScene from './ParallaxScene.js'
 import Title from './Title.js'
 import GameOver from './GameOver.js'
 import MainScene from './MainScene.js'
+import Victory from './Victory.js'
 
 const config = {
   type: Phaser.AUTO,
@@ -17,7 +18,7 @@ const config = {
     },
   },
   pixelArt: true,
-  scene: [Title, MainScene, GameOver],
+  scene: [Title, MainScene, GameOver, Victory],
   // scene: [ParallaxScene],
 }
 
