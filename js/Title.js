@@ -44,14 +44,6 @@ export default class Title extends Phaser.Scene {
     //   })
     //   .setOrigin(0.5)
 
-    // var text = this.add
-    //   .text(900, 400, 'Press SPACE to Pew', {
-    //     fontSize: 100,
-    //     color: 'white',
-    //     fontStyle: 'bold',
-    //   })
-    //   .setOrigin(0.5)
-
     const width = this.scale.width
     const height = this.scale.height
 
@@ -103,6 +95,13 @@ export default class Title extends Phaser.Scene {
     start.on('pointerdown', () => this.scene.start('MainScene'))
 
     // start.on('pointerover', () => start.setTint(0xff0000a160))
+    var text = this.add
+      .text(950, 750, 'Created by Team PEWPEW, Diana David Liam Yiyu', {
+        fontSize: 20,
+        color: 'white',
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5)
   }
 
   update() {

@@ -1,4 +1,5 @@
 import LaserGroup from '../js/Laser.js'
+import EnemyGroup from './Enemy.js'
 import BossFireGroup from './BossFire.js'
 // import ParallaxScene from '../js/ParallaxScene.js'
 
@@ -96,9 +97,7 @@ export default class MainScene extends Phaser.Scene {
 
     //annoying but amazing moving obstacles
     this.belowPlatforms = this.physics.add.group()
-
     this.abovePlatforms = this.physics.add.group()
-
     const startingObstacleDistance = 2000
     const minXGap = 500
     const maxXGap = 1000
@@ -136,21 +135,12 @@ export default class MainScene extends Phaser.Scene {
     //our main character---the 'dude' and its weapon
     this.player = this.physics.add.sprite(100, 0, 'dude')
     this.player.setScale(0.2)
-    this.laserGroup = new LaserGroup(this)
+    // this.player.setCollideWorldBounds(true)
 
     this.cursors = this.input.keyboard.createCursorKeys()
-    this.anims.create({
-      key: 'idle',
-      frames: this.anims.generateFrameNumbers('Alan'),
-      frameRate: 10,
-      repeat: -1,
-    })
 
-    this.enemyAlan = this.physics.add
-      .sprite(3000, 300, 'Alan')
-      .setScale(5)
-      .setGravity(0, -330)
-    this.enemyAlan.play('idle', true)
+    this.laserGroup = new LaserGroup(this)
+    this.enemyGroup = new EnemyGroup(this)
 
     this.anims.create({
       key: 'idle1',
@@ -181,7 +171,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemyLips.play('idle2', true)
 
     this.tweens.add({
-      targets: [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      targets: [this.enemyBonBon, this.enemyLips],
       x: 0,
       duration: 8800,
       ease: 'Linear',
@@ -219,7 +209,7 @@ export default class MainScene extends Phaser.Scene {
     //all colliders
     this.physics.add.collider(
       this.player,
-      [this.enemyAlan, this.enemyBonBon, this.enemyLips, this.bossFireGroup],
+      this.enemyGroup,
       this.hitEnemy,
       null,
       this
@@ -235,7 +225,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.physics.add.collider(
       this.laserGroup,
-      [this.enemyAlan, this.enemyBonBon, this.enemyLips],
+      this.enemyGroup,
       this.fireEnemy,
       null,
       this
@@ -262,13 +252,17 @@ export default class MainScene extends Phaser.Scene {
     this.time.addEvent({
       delay: 500,
       callback: () => {
-        this.Kaboom.destroy()
+        this.Kaboom.setVisible(false)
       },
     })
   }
 
   fireBullet() {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
+  }
+
+  activateEnemy() {
+    this.enemyGroup.activateEnemy()
   }
 
   bossBullet() {
@@ -297,11 +291,13 @@ export default class MainScene extends Phaser.Scene {
 
   hitEnemy(player, enemy) {
     this.physics.pause()
+
     player.setTint(0xff0000)
-    enemy.destroy()
+
     this.kaboom(player)
     this.playerExplosion.play()
     this.player.setVisible(false)
+
     this.time.addEvent({
       delay: 1000,
       callback: () => {
@@ -332,7 +328,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   firePlatform(laser, platform) {
-    laser.destroy()
+    laser.setVisible(false)
   }
 
   gameOver() {
@@ -359,6 +355,7 @@ export default class MainScene extends Phaser.Scene {
     }
     if (this.cursors.space.isDown) {
       this.fireBullet()
+      this.activateEnemy()
       this.laserSound.play()
     }
 
