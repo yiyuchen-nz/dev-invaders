@@ -7,9 +7,10 @@ export class BossFire extends Phaser.Physics.Arcade.Sprite {
     this.body.reset(x, y)
     this.setVelocityX(-500)
     // refactor this with only gravity for player
-    this.setGravity(0, -330)
+    this.setGravity(0, -280)
     this.setActive(true)
     this.setVisible(true)
+    // this.setRotation(atan2(x - 5, y - 5))
   }
 }
 
@@ -18,16 +19,17 @@ export default class BossFireGroup extends Phaser.Physics.Arcade.Group {
     super(scene.physics.world, scene)
 
     this.createMultiple({
-      frameQuantity: 8,
+      frameQuantity: 5,
       key: 'bossfire',
       active: false,
       visible: false,
-      setScale: { x: 3, y: 3 },
+      setScale: { x: 0.08, y: 0.08 },
+      setXY: { x: 800 },
       classType: BossFire,
     })
 
-    this.shotDelay = 1000
-    this.nextShotTime = 300
+    this.shotDelay = 800
+    this.nextShotTime = 500
   }
 
   bossBullet(x, y) {
