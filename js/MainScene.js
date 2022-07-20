@@ -358,7 +358,8 @@ export default class MainScene extends Phaser.Scene {
       this.gameOver()
     }
 
-    if (this.timeGameStart && this.time.now > this.enemyTime){
+    // aactivate enemies
+    if (this.time.now > this.enemyTime){
       this.activateEnemy(1920,Phaser.Math.Between(0,800))
       this.enemyTime = this.time.now + this.enemyDelay
     }
