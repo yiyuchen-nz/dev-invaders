@@ -7,7 +7,7 @@ const config = {
   type: Phaser.AUTO,
   width: 1920,
   height: 800,
-  backgroundColor: 'black',
+  backgroundColor: '',
   parent: 'dev-invaders',
   physics: {
     default: 'arcade',
@@ -17,7 +17,7 @@ const config = {
     },
   },
   // pixelArt: true,
-  scene: [GameOver],
+  scene: [Title, MainScene, GameOver],
   // scene: [ParallaxScene],
 }
 
