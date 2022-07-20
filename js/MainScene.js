@@ -1,5 +1,9 @@
 import LaserGroup from '../js/Laser.js'
+<<<<<<< HEAD
 import EnemyGroup from './Enemy.js'
+=======
+import BossFireGroup from './BossFire.js'
+>>>>>>> origin
 // import ParallaxScene from '../js/ParallaxScene.js'
 
 export default class MainScene extends Phaser.Scene {
@@ -48,6 +52,12 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 16,
     })
 
+    this.load.spritesheet('Boss', 'assets/minipixel/Enemies/Boss.png', {
+      frameWidth: 90,
+      frameHeight: 90,
+    })
+    this.load.image('bossfire', 'assets/minipixel/BossFireMove.png')
+
     this.load.image('platform', 'assets/obstacles/towerAlt.png')
     this.load.image('platform2', 'assets/obstacles/cactus1.png')
 
@@ -60,7 +70,7 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // new TileSprite(scene, x, y, width, height, textureKey [, frameKey])
 
-    this.music = this.sound.add('bg-music', { loop: true })
+    this.music = this.sound.add('bg-music', { volume: 0.8, loop: true })
     this.music.play()
 
     const width = this.scale.width
@@ -168,6 +178,21 @@ export default class MainScene extends Phaser.Scene {
       yoyo: true,
     })
 
+    this.boss = this.physics.add
+      .sprite(1200, 600, 'Boss')
+      .setScale(8)
+      .setGravity(0, -330)
+      .setFlipX(true)
+
+    this.anims.create({
+      key: 'bossAttack',
+      frames: this.anims.generateFrameNumbers('Boss'),
+      frameRate: 10,
+      repeat: -1,
+    })
+    this.boss.play('bossAttack', true)
+
+    this.bossFireGroup = new BossFireGroup(this)
     this.anims.create({
       key: 'explosion',
       frames: this.anims.generateFrameNumbers('kaboom'),
@@ -233,6 +258,7 @@ export default class MainScene extends Phaser.Scene {
     this.laserGroup.fireBullet(this.player.x + 20, this.player.y)
   }
 
+<<<<<<< HEAD
   activateEnemy() {
     this.enemyGroup.activateEnemy()
   }
@@ -240,6 +266,12 @@ export default class MainScene extends Phaser.Scene {
   hitEnemy(player, enemy2) {
     console.log('hitEnemy', player, enemy2)
 
+=======
+  bossBullet() {
+    this.bossFireGroup.bossBullet(750, this.boss.y - 90)
+  }
+  hitEnemy(player, enemy) {
+>>>>>>> origin
     this.physics.pause()
 
     player.setTint(0xff0000)
@@ -307,6 +339,7 @@ export default class MainScene extends Phaser.Scene {
     // this.parallax.start()
 
     this.resetBullet()
+    this.bossBullet()
 
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(this.player.body.velocity.y - 20)
