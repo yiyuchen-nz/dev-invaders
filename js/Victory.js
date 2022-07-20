@@ -11,6 +11,7 @@ export default class Victory extends Phaser.Scene {
     this.load.image('buyNow', '../assets/minipixel/BUYNOW.png')
     this.load.image('sky', 'assets/parallax/sky.png')
     this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
+    this.load.image('con', 'assets/minipixel/CONFETTI.png')
 
     this.load.spritesheet('Alan', '../assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
@@ -38,6 +39,9 @@ export default class Victory extends Phaser.Scene {
     const height = this.scale.height
 
     this.sky = this.add.image(width * 0.5, height * 0.5, 'sky')
+    this.con = this.add.image(width * 0.5, height * 0.5, 'con')
+    this.con = this.add.image(width * 0.8, height * 0.1, 'con')
+
     // this.add.image(width * 0.5, height * 0.5, 'background')
     this.anims.create({
       key: 'idle',
