@@ -11,10 +11,10 @@ export default class Title extends Phaser.Scene {
       '../assets/minipixel/UI objects/START (48 x 8).png'
     )
 
-    this.load.image('left', '../assets/minipixel/LEFT.png')
-    this.load.image('right', '../assets/minipixel/RIGHT.png')
-    this.load.image('text', '../assets/minipixel/TEXT.png')
-    this.load.image('start', '../assets/minipixel/START.png')
+    this.load.image('left', 'assets/minipixel/LEFT.png')
+    this.load.image('right', 'assets/minipixel/RIGHT.png')
+    this.load.image('text', 'assets/minipixel/TEXT.png')
+    this.load.image('start', 'assets/minipixel/START.png')
 
     this.load.image('back-ground', '../assets/minipixel/TITLE.png')
     this.load.image('sky', 'assets/parallax/sky.png')
