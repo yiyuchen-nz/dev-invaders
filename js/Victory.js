@@ -6,14 +6,14 @@ export default class Victory extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('victory', '../assets/minipixel/VICTORY.png')
-    this.load.image('unlockText', '../assets/minipixel/UNLOCKTEXT.png')
-    this.load.image('buyNow', '../assets/minipixel/BUYNOW.png')
+    this.load.image('victory', 'assets/minipixel/VICTORY.png')
+    this.load.image('unlockText', 'assets/minipixel/UNLOCKTEXT.png')
+    this.load.image('buyNow', 'assets/minipixel/BUYNOW.png')
     this.load.image('sky', 'assets/parallax/sky.png')
     this.load.image('dude', 'assets/minipixel/smiling-spaceship.png')
     this.load.image('con', 'assets/minipixel/CONFETTI.png')
 
-    this.load.spritesheet('Alan', '../assets/minipixel/Enemies/Alan.png', {
+    this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
       frameHeight: 16,
     })

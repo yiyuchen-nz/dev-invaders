@@ -8,7 +8,7 @@ export default class Title extends Phaser.Scene {
   preload() {
     this.load.image(
       'start-game',
-      '../assets/minipixel/UI objects/START (48 x 8).png'
+      'assets/minipixel/UI objects/START (48 x 8).png'
     )
 
     this.load.image('left', 'assets/minipixel/LEFT.png')
@@ -16,7 +16,7 @@ export default class Title extends Phaser.Scene {
     this.load.image('text', 'assets/minipixel/TEXT.png')
     this.load.image('start', 'assets/minipixel/START.png')
 
-    this.load.image('back-ground', '../assets/minipixel/TITLE.png')
+    this.load.image('back-ground', 'assets/minipixel/TITLE.png')
     this.load.image('sky', 'assets/parallax/sky.png')
     this.load.image('clouds1', 'assets/parallax/clouds_1.png')
     this.load.image('clouds2', 'assets/parallax/clouds_2.png')

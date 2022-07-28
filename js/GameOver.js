@@ -16,16 +16,16 @@ export default class GameOver extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('restart-game', '../assets/minipixel/restart.png')
-    this.load.image('game-over', '../assets/minipixel/UI-objects/GAME_OVER.png')
-    this.load.image('defeat', '../assets/minipixel/DEFEAT.png')
-    this.load.image('lessons', '../assets/minipixel/LESSONS.png')
+    this.load.image('restart-game', 'assets/minipixel/restart.png')
+    this.load.image('game-over', 'assets/minipixel/UI-objects/GAME_OVER.png')
+    this.load.image('defeat', 'assets/minipixel/DEFEAT.png')
+    this.load.image('lessons', 'assets/minipixel/LESSONS.png')
 
-    this.load.image('continue', '../assets/minipixel/CONTINUE.png')
-    this.load.image('yes', '../assets/minipixel/YES.png')
-    this.load.image('no', '../assets/minipixel/NO.png')
+    this.load.image('continue', 'assets/minipixel/CONTINUE.png')
+    this.load.image('yes', 'assets/minipixel/YES.png')
+    this.load.image('no', 'assets/minipixel/NO.png')
 
-    this.load.spritesheet('Alan', '../assets/minipixel/Enemies/Alan.png', {
+    this.load.spritesheet('Alan', 'assets/minipixel/Enemies/Alan.png', {
       frameWidth: 16,
       frameHeight: 16,
     })

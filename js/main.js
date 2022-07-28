@@ -1,4 +1,3 @@
-import ParallaxScene from './ParallaxScene.js'
 import Title from './Title.js'
 import GameOver from './GameOver.js'
 import MainScene from './MainScene.js'
@@ -18,8 +17,7 @@ const config = {
     },
   },
   pixelArt: true,
-  scene: [Title, MainScene, GameOver,Victory],
-  // scene: [ParallaxScene],
+  scene: [Title, MainScene, GameOver, Victory],
 }
 
 const game = new Phaser.Game(config)
